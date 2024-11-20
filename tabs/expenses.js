@@ -1,7 +1,7 @@
 import React from 'react';
 import { StyleSheet, View, Text } from 'react-native';
 
-const OverviewsTab = () => {
+const ExpensesTab = () => {
   return (
     <View style={styles.container}>
       <Text style={styles.text}>Overviews</Text>
@@ -22,4 +22,4 @@ const styles = StyleSheet.create({
 });
 
 
-export default OverviewsTab;
+export default ExpensesTab;

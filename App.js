@@ -1,28 +1,25 @@
-import { StyleSheet } from 'react-native';
 import { FontAwesome } from 'react-native-vector-icons';
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createDrawerNavigator } from '@react-navigation/drawer';
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
-// Import components
-import MyAccount from './components/my_account';
-import Settings from './components/settings';
+// Import screens
+import MyAccount from './screens/my_account';
+import Settings from './screens/settings';
 
 // Import tabs
 import TransactionsTab from './tabs/transactions';
 import ReportsTab from './tabs/reports';
-import CategoriesTab from './tabs/categories';
 import BudgetsTab from './tabs/budgets';
-import OverviewsTab from './tabs/overview';
+import ExpensesTab from './tabs/expenses';
 
 const Tab = createBottomTabNavigator();
 const Drawer = createDrawerNavigator();
-const Stack = createNativeStackNavigator();
 
 function MainTabs() {
   return (
     <Tab.Navigator
+      initialRouteName='Transactions'
       screenOptions={{
         headerShown: false,
       }}>
@@ -35,11 +32,11 @@ function MainTabs() {
           ),
         }} />
       <Tab.Screen 
-        name="Overviews" 
-        component={OverviewsTab}
+        name="Expenses/Incomes" 
+        component={ExpensesTab}
         options={{
           tabBarIcon: ({ color, size }) => (
-            <FontAwesome name="pie-chart" color={color} size={size} />
+            <FontAwesome name="dollar" color={color} size={size} />
           ),
         }} />
       <Tab.Screen 
@@ -48,14 +45,6 @@ function MainTabs() {
         options={{
           tabBarIcon: ({ color, size }) => (
             <FontAwesome name="calculator" color={color} size={size} />
-          ),
-        }} />
-      <Tab.Screen 
-        name="Categories" 
-        component={CategoriesTab}
-        options={{
-          tabBarIcon: ({ color, size }) => (
-            <FontAwesome name="tags" color={color} size={size} />
           ),
         }} />
       <Tab.Screen 
@@ -72,7 +61,8 @@ function MainTabs() {
 
 function AppDrawer() {
   return (
-    <Drawer.Navigator>
+    <Drawer.Navigator
+      initialRouteName='Dashboard'>
       <Drawer.Screen 
         name="My Account" 
         component={MyAccount} 
@@ -160,12 +150,3 @@ export default function App() {
     </NavigationContainer>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
