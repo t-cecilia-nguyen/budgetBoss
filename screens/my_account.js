@@ -1,10 +1,17 @@
 import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet, Image } from 'react-native';
 
 function MyAccount() {
   return (
     <View style={styles.container}>
-      <Text style={styles.text}>My Account Page</Text>
+      <View style={styles.card}>
+        <Image
+          source={require('../assets/profilepic.png')}
+          style={styles.profileImage}
+        />
+        <Text style={styles.name}>Mary Jane</Text>
+        <Text style={styles.email}>maryjane@example.com</Text> 
+        </View>
     </View>
   );
 }
@@ -12,13 +19,25 @@ function MyAccount() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#fff',
+    marginTop: 100,
   },
-  text: {
-    fontSize: 24,
+  profileImage: {
+    width: 200,
+    height: 200,
+    borderRadius: 50,
+    marginBottom: 20,
+  },
+  name: {
+    fontSize: 20,
     fontWeight: 'bold',
+    marginBottom: 5,
+    textAlign: 'center',
+  },
+  email: {
+    fontSize: 14,
+    color: '#555',
+    textAlign: 'center',
   },
 });
 
