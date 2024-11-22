@@ -13,12 +13,12 @@ const Tab = createBottomTabNavigator();
 export default function ButtomTabs() {
 	return (
 		<Tab.Navigator
-		initialRouteName='Transactions'
+		initialRouteName='Reports'
 		screenOptions={{
 			headerShown: false,
 			tabBarActiveTintColor: Colors.accentYellow,
-        tabBarInactiveTintColor: Colors.lightGrey,
-        tabBarStyle: {
+        	tabBarInactiveTintColor: Colors.lightGrey,
+        	tabBarStyle: {
 			backgroundColor: Colors.primaryBlue,
 		}}}
 		>
