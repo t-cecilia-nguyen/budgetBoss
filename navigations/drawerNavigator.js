@@ -1,9 +1,11 @@
-import React from 'react';
+import React, { useEffect } from 'react';
+import { Alert } from 'react-native';
 import { FontAwesome } from 'react-native-vector-icons';
 import { createDrawerNavigator } from '@react-navigation/drawer';
+import AsyncStorage from '@react-native-async-storage/async-storage'; // Testing purposes only
 
 // Import screens
-import MyAccount from '../screens/my_account';
+import MyAccount from '../screens/myAccount';
 import Settings from '../screens/settings';
 
 // Import bottom tabs
@@ -13,12 +15,19 @@ const Drawer = createDrawerNavigator();
 
 // Placeholer for sign out
 function SignOutComponent({ navigation }) {
-	React.useEffect(() => {
-		navigation.reset({
-			index: 0,
-			routes: [{ name: 'Login' }]
-		});
-		}, [navigation]);
+	useEffect(() => {
+        const handleSignOut = async () => {
+            try {
+                // await AsyncStorage.clear(); // Deletes AsyncStorage data - Use to reset if needed
+                Alert.alert('You have been signed out');
+				navigation.replace('Login');
+            } catch (error) {
+                console.log('Error during sign out:', error);
+            }
+        };
+        handleSignOut();
+    }, [navigation]);
+
 		return null;
 }
 
