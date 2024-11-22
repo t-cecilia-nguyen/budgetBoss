@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 import { Alert } from 'react-native';
 import { FontAwesome } from 'react-native-vector-icons';
 import { createDrawerNavigator } from '@react-navigation/drawer';
+import { Colors } from '../assets/colors';
 import AsyncStorage from '@react-native-async-storage/async-storage'; // Testing purposes only
 
 // Import screens
@@ -35,6 +36,12 @@ export default function DrawerNavigator() {
 	return (
 		<Drawer.Navigator
 		initialRouteName="Dashboard"
+		screenOptions={{
+			headerStyle: {
+			backgroundColor: Colors.primaryBlue,
+			},
+			drawerActiveTintColor: Colors.primaryBlue,
+		}}
 		>
 		<Drawer.Screen 
 			name="My Account" 

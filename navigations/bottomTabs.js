@@ -1,5 +1,6 @@
 import { FontAwesome } from 'react-native-vector-icons';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { Colors } from '../assets/colors';
 
 // Import tabs
 import TransactionsTab from '../tabs/transactions';
@@ -15,7 +16,12 @@ export default function ButtomTabs() {
 		initialRouteName='Transactions'
 		screenOptions={{
 			headerShown: false,
-		}}>
+			tabBarActiveTintColor: Colors.accentYellow,
+        tabBarInactiveTintColor: Colors.lightGrey,
+        tabBarStyle: {
+			backgroundColor: Colors.primaryBlue,
+		}}}
+		>
 		<Tab.Screen 
 			name="Transactions" 
 			component={TransactionsTab}
