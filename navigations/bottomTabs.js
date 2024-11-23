@@ -31,7 +31,7 @@ export default function ButtomTabs() {
 			),
 			}} />
 		<Tab.Screen 
-			name="Expenses/Incomes" 
+			name="Inc/Exp" 
 			component={ExpensesTab}
 			options={{
 			tabBarIcon: ({ color, size }) => (

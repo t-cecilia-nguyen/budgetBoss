@@ -1,10 +1,12 @@
 import React from 'react';
 import { StyleSheet, View, Text } from 'react-native';
+import IncomeExpensesFormComponent from '../components/IncomeExpensesFormComponent';
 
 const ExpensesTab = () => {
 	return (
 		<View style={styles.container}>
-		<Text style={styles.text}>Overviews</Text>
+		<Text style={styles.text}>Income and Expenses Form</Text>
+		<IncomeExpensesFormComponent />
 		</View>
 	);
 };
