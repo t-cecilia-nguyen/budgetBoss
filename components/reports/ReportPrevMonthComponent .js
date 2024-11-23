@@ -3,8 +3,7 @@ import { View, Text, StyleSheet, ScrollView, Dimensions } from 'react-native';
 import { FontAwesome } from 'react-native-vector-icons';
 
 import { Colors } from '../../assets/colors';
-import SkiaProgressArc from './SkiaProgressArc';
-
+import ProgressBar from './ProgressBar';
 
 const { width: screenWidth } = Dimensions.get("window");
 
@@ -31,8 +30,9 @@ const ReportPrevMonthComponent = () => {
                             <Text>Expense</Text>
                         </View>
                     </View>
-                   
-                    <SkiaProgressArc/>
+                    <ProgressBar newValue={0.5}/>
+
+                
                    
                 </View>
 
@@ -95,16 +95,7 @@ const styles = StyleSheet.create({
         top: 20,
         right: 20
     },
-    progressArcBox:{
-        borderWidth: 1,
-        width: '80%',
-        height: '50%',
-        
-    },
-    progressArc:{
-        width: 200,
-        height: 200
-    },
+    
     titleText: {
         fontSize: 18,
         fontWeight: 'bold',

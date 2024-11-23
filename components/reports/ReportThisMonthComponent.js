@@ -1,7 +1,11 @@
 import React , {useState} from 'react';
 import { View, Text, StyleSheet, Dimensions, ScrollView } from 'react-native';
+import { FontAwesome } from 'react-native-vector-icons';
 
-import {Colors} from '../../assets/colors'
+import { Colors } from '../../assets/colors';
+import ProgressBar from './ProgressBar';
+
+
 
 const { width: screenWidth } = Dimensions.get("window");
 
@@ -15,29 +19,50 @@ const ReportThisMonthComponent = () => {
 
 			<Text>This Month</Text>
 			<ScrollView style={styles.scrollView}>
+
                 <View style={styles.card}>
-                    <Text style={styles.cardText}>{titles[0]}</Text>
+                    <Text style={styles.cardText}>Running Budget</Text>
+                    <View style={styles.noteBox}>
+                        <View style={styles.flexBox}>
+                            <FontAwesome name="circle" size={15} color={Colors.lightGrey}  />
+                            <Text>Budget</Text>
+                        </View>
+                        <View style={styles.flexBox}>
+                            <FontAwesome name="circle" size={15} color={Colors.green}  />
+                            <Text>Expense</Text>
+                        </View>
+                    </View>
+                   <ProgressBar newValue={0.1}/>
+                
+                   
                 </View>
+
                 <View style={styles.card}>
-                    <Text style={styles.cardText}>{titles[1]}</Text>
+                    <Text style={styles.cardText}>Transaction History</Text>
                 </View>
+
                 <View style={styles.card}>
-                    <Text style={styles.cardText}>{titles[2]}</Text>
+                    <Text style={styles.cardText}>Report This Month</Text>
                 </View>
             </ScrollView>
+            
 		</View>
 	);
 };
 
 export default ReportThisMonthComponent;
-
 const styles = StyleSheet.create({
+	container: {
+        backgroundColor: "lightpink",
+        paddingHorizontal: 10,   
+    },
     card: {
+        flex: 1,
         width: screenWidth - 20,
         height: 300,
         marginVertical: 10,
-        justifyContent: 'flex-start',
-        alignItems: 'flex-start',
+        justifyContent: 'center',
+        alignItems: 'center',
         borderRadius: 10,
         borderRadius: 10,
         borderWidth: 1,
@@ -54,16 +79,36 @@ const styles = StyleSheet.create({
         fontSize: 16,
         fontWeight: "bold",
 		padding: 15,
+        position: 'absolute',
+        top: 10,
+        left: 10
     },
-    container: {
-        backgroundColor: "#fff",
-        paddingHorizontal: 10,
+    flexBox:{
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems:'center'
     },
-    
+    noteBox: {
+        width: '25%',
+        position: 'absolute',
+        top: 20,
+        right: 20
+    },
+    progressArcBox:{
+        borderWidth: 1,
+        width: '80%',
+        height: '50%',
+        
+    },
+    progressArc:{
+        width: 200,
+        height: 200
+    },
     titleText: {
         fontSize: 18,
         fontWeight: 'bold',
         marginVertical: 10,
     },
     
+	
 });
