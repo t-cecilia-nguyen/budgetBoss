@@ -1,13 +1,14 @@
 import React from 'react';
 import { StyleSheet, View, Text } from 'react-native';
+import TransactionList from '../components/TransactionListComponent'; 
+
 
 const TransactionsTab = () => {
-	return (
-		<View style={styles.container}>
-		<Text style={styles.text}>Transactions</Text>
-		</View>
-	);
+  return (
+    <TransactionList />
+  );
 };
+
 
 const styles = StyleSheet.create({
 	container: {
