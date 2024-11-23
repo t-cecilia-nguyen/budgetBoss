@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
 import { StyleSheet, View, Text, TextInput, TouchableOpacity } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
-//import { Expenses, Income } from '../data/transactions';
+import { Expenses, Income } from '../data/transactions';
+import TransactionList from './TransactionListComponent'; 
+
 
 const FormTab = () => {
     const [date, setDate] = useState('');
@@ -94,6 +96,8 @@ const FormTab = () => {
                     <Text style={styles.buttonText}>Save</Text>
                 </TouchableOpacity>
             </View>
+
+            <TransactionList incomeTransactions={incomeTransactions} expenseTransactions={expenseTransactions} />
         </View>
     );
 };

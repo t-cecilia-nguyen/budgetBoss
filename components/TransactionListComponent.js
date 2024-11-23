@@ -2,10 +2,13 @@ import React, { useState, useEffect } from 'react';
 import { StyleSheet, View, Text } from 'react-native';
 import { Expenses, Income } from '../data/transactions';
 
-const combineAndSortTransactions = () => {
+
+const combineAndSortTransactions = (incomeTransactions = [], expenseTransactions = []) => {
   const allTransactions = [
     ...Object.values(Expenses),
-    ...Object.values(Income)
+    ...Object.values(Income),
+    ...incomeTransactions,
+    ...expenseTransactions
   ];
 
   return allTransactions.sort((a, b) => new Date(b.Date) - new Date(a.Date));
@@ -22,11 +25,11 @@ const groupTransactionsByDate = (transactions) => {
   }, {});
 };
 
-const TransactionList = () => {
+const TransactionList = ({ incomeTransactions = [], expenseTransactions = [] }) => {
   const [totalIncome, setTotalIncome] = useState(0);
   const [totalExpenses, setTotalExpenses] = useState(0);
 
-  const transactions = combineAndSortTransactions();
+  const transactions = combineAndSortTransactions(incomeTransactions, expenseTransactions);
   const groupedTransactions = groupTransactionsByDate(transactions);
 
   useEffect(() => {
@@ -43,10 +46,10 @@ const TransactionList = () => {
 
     setTotalIncome(income);
     setTotalExpenses(expenses);
-  }, [transactions]);
+  }, [incomeTransactions, expenseTransactions]);
 
   const netAmount = totalIncome - totalExpenses;
-
+  
   return (
     <View style={styles.container}>
       <View style={styles.totalsContainer}>
