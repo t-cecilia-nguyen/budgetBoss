@@ -1,16 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { StyleSheet, View, Text } from 'react-native';
-import { Expenses, Income } from '../data/transactions';
+import { useEffect, useState } from 'react';
+import { useTransactions } from '../navigations/bottomTabs';
 
 
 const combineAndSortTransactions = (incomeTransactions = [], expenseTransactions = []) => {
-  const allTransactions = [
-    ...Object.values(Expenses),
-    ...Object.values(Income),
-    ...incomeTransactions,
-    ...expenseTransactions
-  ];
-
+  const allTransactions = [...incomeTransactions, ...expenseTransactions];
   return allTransactions.sort((a, b) => new Date(b.Date) - new Date(a.Date));
 };
 
@@ -25,31 +20,26 @@ const groupTransactionsByDate = (transactions) => {
   }, {});
 };
 
-const TransactionList = ({ incomeTransactions = [], expenseTransactions = [] }) => {
-  const [totalIncome, setTotalIncome] = useState(0);
-  const [totalExpenses, setTotalExpenses] = useState(0);
+const TransactionList = () => {
+
+  const { incomeTransactions, expenseTransactions } = useTransactions();
+
 
   const transactions = combineAndSortTransactions(incomeTransactions, expenseTransactions);
+
   const groupedTransactions = groupTransactionsByDate(transactions);
 
-  useEffect(() => {
-    let income = 0;
-    let expenses = 0;
-
-    transactions.forEach(transaction => {
-      if (transaction.Type === 'Income') {
-        income += transaction.Amount;
-      } else if (transaction.Type === 'Expense') {
-        expenses += transaction.Amount;
-      }
-    });
-
-    setTotalIncome(income);
-    setTotalExpenses(expenses);
-  }, [incomeTransactions, expenseTransactions]);
+  const totalIncome = transactions.filter(t => t.Type === 'Income').reduce((sum, t) => sum + t.Amount, 0);
+  const totalExpenses = transactions.filter(t => t.Type === 'Expense').reduce((sum, t) => sum + t.Amount, 0);
 
   const netAmount = totalIncome - totalExpenses;
-  
+
+
+  useEffect(() => {
+      console.log('Updated Income Transactions:', incomeTransactions);
+      console.log('Updated Expense Transactions:', expenseTransactions);
+  }, [incomeTransactions, expenseTransactions]);
+
   return (
     <View style={styles.container}>
       <View style={styles.totalsContainer}>
@@ -57,6 +47,8 @@ const TransactionList = ({ incomeTransactions = [], expenseTransactions = [] }) 
         <Text style={styles.totalText}>Total Expenses: <Text style={styles.expense}>-${totalExpenses}</Text></Text>
         <Text style={styles.totalText}>Net: <Text style={netAmount >= 0 ? styles.income : styles.expense}>{netAmount >= 0 ? '+' : '-'}${Math.abs(netAmount)}</Text></Text>
       </View>
+
+      {/* Display grouped transactions */}
       {Object.keys(groupedTransactions).map((date, index) => (
         <View key={index} style={styles.transactionGroup}>
           <Text style={styles.dateText}>{date}</Text>
@@ -135,7 +127,7 @@ const styles = StyleSheet.create({
   },
   income: {
     color: 'green',
-  }
+  },
 });
 
 export default TransactionList;

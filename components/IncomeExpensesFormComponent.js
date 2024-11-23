@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { StyleSheet, View, Text, TextInput, TouchableOpacity } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
-import { Expenses, Income } from '../data/transactions';
-import TransactionList from './TransactionListComponent'; 
+import { useEffect } from 'react';
+import { useTransactions } from '../navigations/bottomTabs';
 
 
 const FormTab = () => {
@@ -12,47 +12,35 @@ const FormTab = () => {
     const [notes, setNotes] = useState('');
     const [formType, setFormType] = useState('Income');
 
+    
+  const { incomeTransactions, expenseTransactions, setExpenseTransactions, setIncomeTransactions } = useTransactions();
 
-    const [incomeTransactions, setIncomeTransactions] = useState([]);
-    const [expenseTransactions, setExpenseTransactions] = useState([]);
+
+    useEffect(() => {
+        console.log('Income Transactions:', incomeTransactions);
+        console.log('Expense Transactions:', expenseTransactions);
+    }, [incomeTransactions, expenseTransactions]);
 
     const handleSubmission = async () => {
-
         const newTransaction = {
-            Date: date,
-            Amount: parseFloat(amount),
-            Category: category,
-            Type: formType === 'Income' ? 'Income' : 'Expense',
+          Date: date,
+          Amount: parseFloat(amount),
+          Category: category,
+          Type: formType === 'Income' ? 'Income' : 'Expense',
         };
-
+      
         if (formType === 'Income') {
-
-            // Add new income transaction to array of income transactions
-            setIncomeTransactions((prevTransactions) => {
-                const updatedIncome = [...prevTransactions, newTransaction];
-                console.log('Updated Income Transactions:', updatedIncome);
-                return updatedIncome;
-            });
-
-            console.log('Added entry to Income:', newTransaction);
-        } else {
-
-            // Add new expense transaction to array of expense transactions
-            setExpenseTransactions((prevTransactions) => {
-                const updatedExpenses = [...prevTransactions, newTransaction];
-                console.log('Updated Expenses Transactions:', updatedExpenses);
-                return updatedExpenses;
-            });
-
-            console.log('Added entry to Expenses:', newTransaction);
-        }
-        
+            setIncomeTransactions(prevState => [newTransaction, ...prevState]);
+          } else {
+            setExpenseTransactions(prevState => [newTransaction, ...prevState]);
+          }
+      
         // Reset form data
         setDate('');
         setAmount('');
         setCategory('');
         setNotes('');
-    };
+      };
 
     return (
         <View style={styles.container}>
@@ -104,8 +92,9 @@ const FormTab = () => {
                 </TouchableOpacity>
             </View>
 
-            <TransactionList incomeTransactions={incomeTransactions} expenseTransactions={expenseTransactions} />
+
         </View>
+        
     );
 };
 

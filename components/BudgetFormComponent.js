@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { StyleSheet, View, Text, TextInput, TouchableOpacity } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
 import { FlatList } from 'react-native-gesture-handler';
+import { useTransactions } from '../navigations/bottomTabs';
 
 const BudgetFormTab = () => {
 
@@ -14,6 +15,8 @@ const BudgetFormTab = () => {
     const [budgetEntries, setBudgetEntries] = useState('');
     const [viewMode, setViewMode] = useState('Form');
 
+    const { incomeTransactions, expenseTransactions, setExpenseTransactions, setIncomeTransactions } = useTransactions();
+    
     const handleSubmission = () => {
         
         const newBudgetEntry = {

@@ -1,5 +1,7 @@
 import React from 'react';
 import { View, Image, StyleSheet, FlatList, TouchableOpacity } from 'react-native';
+import { useTransactions } from '../navigations/bottomTabs';
+
 
 const reportImages = [
 	require('../assets/reports/RunningBudget.png'),

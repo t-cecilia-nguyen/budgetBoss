@@ -1,7 +1,8 @@
 import React from 'react';
 import { StyleSheet, View, Text } from 'react-native';
+import { useTransactions } from '../navigations/bottomTabs';
 
-const CategoriesTab = () => {
+const CategoriesTab = ({ route }) => {
 	return (
 		<View style={styles.container}>
 		<Text style={styles.text}>Categories</Text>
