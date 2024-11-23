@@ -27,6 +27,7 @@ const FormTab = () => {
 
         if (formType === 'Income') {
 
+            // Add new income transaction to array of income transactions
             setIncomeTransactions((prevTransactions) => {
                 const updatedIncome = [...prevTransactions, newTransaction];
                 console.log('Updated Income Transactions:', updatedIncome);
@@ -36,6 +37,7 @@ const FormTab = () => {
             console.log('Added entry to Income:', newTransaction);
         } else {
 
+            // Add new expense transaction to array of expense transactions
             setExpenseTransactions((prevTransactions) => {
                 const updatedExpenses = [...prevTransactions, newTransaction];
                 console.log('Updated Expenses Transactions:', updatedExpenses);
@@ -45,7 +47,6 @@ const FormTab = () => {
             console.log('Added entry to Expenses:', newTransaction);
         }
         
-      
         // Reset form data
         setDate('');
         setAmount('');
@@ -58,11 +59,13 @@ const FormTab = () => {
            <View style={styles.form}>
                 <Text style={styles.title}>{formType} Form</Text>
 
+                {/* Picker to select between income and expenses forms */}
                 <Picker selectedValue={formType} style={styles.picker} onValueChange={(itemValue) => setFormType(itemValue)}>
                     <Picker.Item label="income" value="Income"></Picker.Item>
                     <Picker.Item label="Expense" value="Expense"></Picker.Item>
                 </Picker>
-           
+
+                {/* Text Input for Date */}
                 <TextInput
                     style={styles.input}
                     placeholder="Date (yyyy-mm-dd)"
@@ -70,6 +73,7 @@ const FormTab = () => {
                     onChangeText={setDate}
                 />
 
+                {/* Text Input for Amount */}
                 <TextInput
                     style={styles.input}
                     placeholder="Amount"
@@ -78,6 +82,7 @@ const FormTab = () => {
                     onChangeText={setAmount}
                 />
 
+                {/* Text Input for Category */}
                 <TextInput
                     style={styles.input}
                     placeholder="Category"
@@ -85,13 +90,15 @@ const FormTab = () => {
                     onChangeText={setCategory}
                 />
 
+                {/* Text Input for Notes */}
                 <TextInput
                     style={styles.input}
                     placeholder="Notes"
                     value={notes}
                     onChangeText={setNotes}
                 />
-
+                
+                {/* Button to submit form */}
                 <TouchableOpacity style={styles.button} onPress={handleSubmission}>
                     <Text style={styles.buttonText}>Save</Text>
                 </TouchableOpacity>
@@ -102,6 +109,7 @@ const FormTab = () => {
     );
 };
 
+// Styles
 const styles = StyleSheet.create({
 
     container: {

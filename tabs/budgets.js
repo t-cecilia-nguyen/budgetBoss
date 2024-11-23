@@ -1,10 +1,12 @@
 import React from 'react';
 import { StyleSheet, View, Text } from 'react-native';
+import BudgetFormComponent from '../components/BudgetFormComponent';
 
 const BudgetsTab = () => {
 	return (
 		<View style={styles.container}>
 		<Text style={styles.text}>Budgets</Text>
+		<BudgetFormComponent />
 		</View>
 	);
 };
