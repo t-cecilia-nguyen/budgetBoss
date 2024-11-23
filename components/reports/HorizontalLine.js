@@ -1,28 +1,24 @@
 import React from 'react';
 import { View, StyleSheet , Dimensions, Text} from 'react-native';
-import CustomButtonTab from './CustomButtonTab';
 
 
 
 
 
-const { width: screenWidth } = Dimensions.get("window");
 
 
 
-const HorizontalLine = () => {
+const HorizontalLine = ({width = '100%', style}) => {
     return (
-        <View style={styles.horizontalLine}/>
+        <View style={[ {width}, styles.line, style]}/>
     );
 };
 
 export default HorizontalLine;
 
 const styles = StyleSheet.create({
-    horizontalLine: {
+    line: {
         height: 1, 
-        backgroundColor: 'grey', 
-        width: screenWidth, 
-        
+        backgroundColor: 'grey',         
     },
 });

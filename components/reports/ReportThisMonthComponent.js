@@ -4,6 +4,7 @@ import { FontAwesome } from 'react-native-vector-icons';
 
 import { Colors } from '../../assets/colors';
 import ProgressBar from './ProgressBar';
+import LineGraph from './LineGraph';
 
 
 
@@ -18,7 +19,7 @@ const ReportThisMonthComponent = () => {
 		<View style={styles.container}>
 
 			<Text>This Month</Text>
-			<ScrollView style={styles.scrollView}>
+			<ScrollView >
 
                 <View style={styles.card}>
                     <Text style={styles.cardText}>Running Budget</Text>
@@ -43,7 +44,10 @@ const ReportThisMonthComponent = () => {
 
                 <View style={styles.card}>
                     <Text style={styles.cardText}>Report This Month</Text>
+                    <LineGraph/>
                 </View>
+
+                <View style={styles.bottomSpacer} />
             </ScrollView>
             
 		</View>
@@ -52,6 +56,9 @@ const ReportThisMonthComponent = () => {
 
 export default ReportThisMonthComponent;
 const styles = StyleSheet.create({
+    bottomSpacer: {
+        height: 65, 
+    },
 	container: {
         backgroundColor: "lightpink",
         paddingHorizontal: 10,   
@@ -94,16 +101,7 @@ const styles = StyleSheet.create({
         top: 20,
         right: 20
     },
-    progressArcBox:{
-        borderWidth: 1,
-        width: '80%',
-        height: '50%',
-        
-    },
-    progressArc:{
-        width: 200,
-        height: 200
-    },
+    
     titleText: {
         fontSize: 18,
         fontWeight: 'bold',

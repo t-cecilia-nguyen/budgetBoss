@@ -40,8 +40,9 @@ const ReportPrevMonthComponent = () => {
                     <Text style={styles.cardText}>Transaction History</Text>
                 </View>
 
-                <View style={styles.card}>
+                <View style={[styles.card, { paddingBottom: 50 }]}>
                     <Text style={styles.cardText}>Report This Month</Text>
+                
                 </View>
             </ScrollView>
             

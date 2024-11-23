@@ -2,6 +2,8 @@ import { View, Text, StyleSheet } from "react-native";
 import React, { useState, useEffect } from "react";
 import * as Progress from "react-native-progress";
 
+import {Colors} from "../../assets/colors";
+
 const ProgressBar = ({newValue}) => {
   const [value, setValue] = useState(0);
 
@@ -17,7 +19,12 @@ const ProgressBar = ({newValue}) => {
 
   return (
     <View style={styles.container}>
-      <Progress.Bar progress={value} width="300" color="grey"  />
+      <Progress.Bar 
+        progress={value} 
+        width={300} 
+        color={Colors.green}  
+        unfilledColor={Colors.lightGrey}  
+        borderWidth={0}   />
     </View>
   );
 };
@@ -26,9 +33,9 @@ export default ProgressBar;
 
 const styles = StyleSheet.create({
   container: {
+    borderWidth: 1,
     width: "90%",
     height: 20,
-    borderWidth: 1,
     justifyContent: "center",
     alignItems: "center",
     alignContent: "center",
