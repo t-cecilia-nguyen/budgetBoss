@@ -17,6 +17,12 @@ export const Expenses = {
     Category: 'Gym',
     Type: 'Expense',
   },
+  Transaction4: {
+    Date: '2024-01-03',
+    Amount: 35,
+    Category: 'Transportation',
+    Type: 'Expense',
+  },
 };
 
 export const Income = {
