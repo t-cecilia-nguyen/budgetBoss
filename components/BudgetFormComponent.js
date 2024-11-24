@@ -94,7 +94,7 @@ const BudgetFormTab = () => {
     };
 
     return (
-        <View style={styles.container}>
+        <View>
             <Picker
                 selectedValue={viewMode}
                 style={styles.picker}
@@ -178,8 +178,9 @@ const styles = StyleSheet.create({
         flex: 1,
         backgroundColor: '#F0F0F5',
         padding: 20,
+        justifyContent: 'center',
+        alignItems: 'center',
     },
-    
     form: {
         backgroundColor: '#fff',
         borderRadius: 10,
@@ -187,15 +188,15 @@ const styles = StyleSheet.create({
         shadowColor: '#000',
         shadowOpacity: 0.1,
         elevation: 5,
+        width: '90%',
+        marginHorizontal: 20,
     },
-
     title: {
         fontSize: 24,
         fontWeight: 'bold',
         marginBottom: 20,
         textAlign: 'center',
     },
-
     input: {
         height: 50,
         borderColor: '#007AFF',
@@ -206,7 +207,7 @@ const styles = StyleSheet.create({
     },
 
     picker: {
-        height: 50,
+        height: 60,
         marginBottom: 15,
         borderWidth: 1,
         borderRadius: 10,
@@ -229,6 +230,8 @@ const styles = StyleSheet.create({
     // SUMMARY STYLING
     summaryContainer: {
         marginTop: 20,
+        width: '90%',
+        marginHorizontal: 20,
     },
 
     summaryItem: {

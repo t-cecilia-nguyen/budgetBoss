@@ -13,7 +13,6 @@ const ReportComponent = () => {
 
 	return (
 		<View style={styles.container}>
-
 			<FlatList
 			data={reportImages}
 			keyExtractor={(item, index) => index.toString()} 
@@ -49,6 +48,3 @@ const styles = StyleSheet.create({
 		alignItems: 'center', 
 	}
 });
-
-
-

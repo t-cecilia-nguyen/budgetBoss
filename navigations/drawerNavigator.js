@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Alert, View, Text, Image, StyleSheet } from 'react-native';
 import { FontAwesome } from 'react-native-vector-icons';
 import { createDrawerNavigator, DrawerItemList } from '@react-navigation/drawer';
@@ -15,23 +15,43 @@ import BottomTabs from './bottomTabs';
 const Drawer = createDrawerNavigator();
 
 function DrawerContent(props) {
-	const user = {
-		profilePicture: require('../assets/profilepic.png'),
-		name: 'Test User',
-		email: 'test@gmail.com',
-	}
+	const [firstName, setFirstName] = useState('');
+	const [lastName, setLastName] = useState('');
+	const [email, setEmail] = useState('');
+	const profilePicture = require('../assets/profilepic.png');
+
+	useEffect(() => {
+		const loadUserData = async () => {
+			try {
+				const storedFirstName = await AsyncStorage.getItem('userFirstName');
+				const storedLastName = await AsyncStorage.getItem('userLastName');
+				const storedEmail = await AsyncStorage.getItem('userEmail');
+
+				if (storedFirstName) setFirstName(storedFirstName);
+				if (storedLastName) setLastName(storedLastName);
+				if (storedEmail) setEmail(storedEmail);
+				
+			} catch (error) {
+				console.log('Error retrieving data:', error);
+			} finally {
+				setLoading(false);
+			}
+		};
+
+		loadUserData();
+	}, []);
 
 	return (
 		<View style={styles.drawerContainer}>
 		<View style={styles.profileImageContainer}>
         <Image
-			source={user.profilePicture}
+			source={profilePicture}
 			style={styles.profileImage}
         />
 		</View>
 		<View style={styles.profileInfoContainer}>
-			<Text style={styles.profileName}>{user.name}</Text>
-			<Text style={styles.profileEmail}>{user.email}</Text>
+			<Text style={styles.profileName}>{firstName} {lastName}</Text>
+			<Text style={styles.profileEmail}>{email}</Text>
 		</View>
 		<DrawerItemList {...props} />
     </View>

@@ -43,13 +43,12 @@ const FormTab = () => {
       };
 
     return (
-        <View style={styles.container}>
-           <View style={styles.form}>
+        <View >
+            <View style={styles.form}>
                 <Text style={styles.title}>{formType} Form</Text>
-
                 {/* Picker to select between income and expenses forms */}
                 <Picker selectedValue={formType} style={styles.picker} onValueChange={(itemValue) => setFormType(itemValue)}>
-                    <Picker.Item label="income" value="Income"></Picker.Item>
+                    <Picker.Item label="Income" value="Income"></Picker.Item>
                     <Picker.Item label="Expense" value="Expense"></Picker.Item>
                 </Picker>
 
@@ -91,8 +90,6 @@ const FormTab = () => {
                     <Text style={styles.buttonText}>Save</Text>
                 </TouchableOpacity>
             </View>
-
-
         </View>
         
     );
@@ -105,6 +102,8 @@ const styles = StyleSheet.create({
         flex: 1,
         backgroundColor: '#F0F0F5',
         padding: 20,
+        justifyContent: 'center',
+        alignItems: 'center',
     },
     
     form: {
@@ -114,6 +113,9 @@ const styles = StyleSheet.create({
         shadowColor: '#000',
         shadowOpacity: 0.1,
         elevation: 5,
+        width: '90%',
+        marginHorizontal: 20,
+        marginTop: 20,
     },
 
     title: {

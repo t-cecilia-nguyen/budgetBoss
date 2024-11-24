@@ -41,7 +41,7 @@ const TransactionList = () => {
   }, [incomeTransactions, expenseTransactions]);
 
   return (
-    <View style={styles.container}>
+    <View>
       <View style={styles.totalsContainer}>
         <Text style={styles.totalText}>Total Income: <Text style={styles.income}>+${totalIncome}</Text></Text>
         <Text style={styles.totalText}>Total Expenses: <Text style={styles.expense}>-${totalExpenses}</Text></Text>
@@ -75,7 +75,7 @@ const styles = StyleSheet.create({
     padding: 10,
   },
   totalsContainer: {
-    backgroundColor: '#f0f0f0',
+    backgroundColor: '#fff',
     padding: 15,
     marginBottom: 10,
     borderRadius: 10,
@@ -86,6 +86,9 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 5,
     elevation: 3,
+    marginTop: 20,
+    marginHorizontal: 20,
+    width: '90%',
   },
   totalText: {
     fontSize: 18,
@@ -93,7 +96,19 @@ const styles = StyleSheet.create({
     marginBottom: 5,
   },
   transactionGroup: {
-    marginBottom: 15,
+    marginBottom: 10,
+    marginHorizontal: 20,
+    width: '90%',
+    backgroundColor: '#fff',
+    borderRadius: 10,
+    borderWidth: 1,
+    borderColor: '#ddd',
+    padding: 15,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 5,
+    elevation: 3,
   },
   dateText: {
     fontSize: 16,
@@ -103,13 +118,13 @@ const styles = StyleSheet.create({
   transaction: {
     backgroundColor: '#f9f9f9',
     padding: 15,
-    marginVertical: 8,
+    marginVertical: 5,
     borderRadius: 10,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
     shadowRadius: 5,
-    elevation: 3,
+    elevation: 1,
   },
   row: {
     flexDirection: 'row',

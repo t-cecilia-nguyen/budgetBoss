@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { StyleSheet, View } from 'react-native';
+import { View } from 'react-native';
 import TransactionList from '../components/TransactionListComponent'; 
 import { useTransactions } from '../navigations/bottomTabs';
-
 
 const TransactionsTab = () => {
 
@@ -10,7 +9,6 @@ const TransactionsTab = () => {
     incomeTransactions,
     expenseTransactions,
   } = useTransactions();  
-
 
 	useEffect(() => {
     console.log('Income Transactions:', incomeTransactions);
@@ -20,7 +18,7 @@ const TransactionsTab = () => {
 
 
   return (
-    <View style={styles.container}>
+    <View>
       <TransactionList 
         incomeTransactions={incomeTransactions} 
         expenseTransactions={expenseTransactions} 
@@ -28,15 +26,5 @@ const TransactionsTab = () => {
     </View>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-    padding: 10,
-  },
-});
 
 export default TransactionsTab;

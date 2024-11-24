@@ -22,16 +22,16 @@ const ReportsTab = ({ route }) => {
 	return (
 		<View style={styles.container}>
 		<ReportComponent
-				        incomeTransactions={incomeTransactions} 
-								expenseTransactions={expenseTransactions} 
-								setExpenseTransactions={setExpenseTransactions}
-								setIncomeTransactions={setIncomeTransactions}
+			incomeTransactions={incomeTransactions} 
+			expenseTransactions={expenseTransactions} 
+			setExpenseTransactions={setExpenseTransactions}
+			setIncomeTransactions={setIncomeTransactions}
 		/>
 		</View>
 	);
-	};
+};
 
-	const styles = StyleSheet.create({
+const styles = StyleSheet.create({
 	container: {
 		flex: 1,
 		backgroundColor: "#fff",

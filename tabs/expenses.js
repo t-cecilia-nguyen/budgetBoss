@@ -20,28 +20,15 @@ const ExpensesTab = ({ route }) => {
 
 
 	return (
-		<View style={styles.container}>
-		<Text style={styles.text}>Income and Expenses Form</Text>
+		<View >
 		<IncomeExpensesFormComponent
-				        incomeTransactions={incomeTransactions} 
-								expenseTransactions={expenseTransactions} 
-								setExpenseTransactions={setExpenseTransactions}
-								setIncomeTransactions={setIncomeTransactions}
+			incomeTransactions={incomeTransactions} 
+			expenseTransactions={expenseTransactions} 
+			setExpenseTransactions={setExpenseTransactions}
+			setIncomeTransactions={setIncomeTransactions}
 		/>
 		</View>
 	);
 };
-
-const styles = StyleSheet.create({
-	container: {
-		flex: 1,
-		backgroundColor: '#fff',
-		alignItems: 'center',
-		justifyContent: 'center',
-	},
-	text: {
-		textAlign: 'center',
-	}
-});
 
 export default ExpensesTab;
