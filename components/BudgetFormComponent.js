@@ -44,8 +44,25 @@ const BudgetFormTab = () => {
         setNotes('');
     };
 
+    const combineAndSortTransactions = (incomeTransactions = [], expenseTransactions = []) => {
+        const allTransactions = [...incomeTransactions, ...expenseTransactions];
+        return allTransactions.sort((a, b) => new Date(b.Date) - new Date(a.Date));
+        };
+
     // Render the budget summaries
     const renderBudgetSummary = () => {
+
+        const { incomeTransactions, expenseTransactions } = useTransactions();
+
+
+        const transactions = combineAndSortTransactions(incomeTransactions, expenseTransactions);
+    
+        const totalIncome = transactions.filter(t => t.Type === 'Income').reduce((sum, t) => sum + t.Amount, 0);
+        const totalExpenses = transactions.filter(t => t.Type === 'Expense').reduce((sum, t) => sum + t.Amount, 0);
+      
+        const netAmount = totalIncome - totalExpenses;
+
+
         // Message if no budget entries currently exist
         if (budgetEntries.length === 0) {
             return <Text>No budgets have been added, please add a budget to view its summary.</Text>
@@ -53,19 +70,26 @@ const BudgetFormTab = () => {
 
         // Use array of budget entries and render them in a list
         return (
-            <FlatList
-                data={budgetEntries}
-                keyExtractor={(item, index) => index.toString()}
-                renderItem={({ item }) => (
-                    <View style={styles.summaryItem}>
-                        <Text>Start Date: {item.StartDate}</Text>
-                        <Text>End Date: {item.EndDate}</Text>
-                        <Text>Budget Amount: ${item.Amount}</Text>
-                        <Text>Budget Category:{item.Category}</Text>
-                        <Text>Notes: {item.Notes}</Text>
-                    </View>
-                )}
-            />
+            <View>
+                <View style={styles.totalsContainer}>
+                    <Text style={styles.totalText}>Incoming: <Text style={styles.income}>+${totalIncome}</Text></Text>
+                    <Text style={styles.totalText}>Outgoing: <Text style={styles.expense}>-${totalExpenses}</Text></Text>
+                    <Text style={styles.totalText}>Budget Target: <Text style={netAmount >= 0 ? styles.income : styles.expense}>{netAmount >= 0 ? '+' : '-'}${Math.abs(netAmount)}</Text></Text>
+                </View>
+                <FlatList
+                    data={budgetEntries}
+                    keyExtractor={(item, index) => index.toString()}
+                    renderItem={({ item }) => (
+                        <View style={styles.summaryItem}>
+                            <Text>Start Date: {item.StartDate}</Text>
+                            <Text>End Date: {item.EndDate}</Text>
+                            <Text>Budget Amount: ${item.Amount}</Text>
+                            <Text>Budget Category:{item.Category}</Text>
+                            <Text>Notes: {item.Notes}</Text>
+                        </View>
+                    )}
+                />
+            </View>
         );
     };
 
@@ -216,6 +240,31 @@ const styles = StyleSheet.create({
         shadowOpacity: 0.1,
         elevation: 5,
     },
+
+    totalsContainer: {
+        backgroundColor: '#f0f0f0',
+        padding: 15,
+        marginBottom: 10,
+        borderRadius: 10,
+        borderWidth: 1,
+        borderColor: '#ddd',
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.1,
+        shadowRadius: 5,
+        elevation: 3,
+      },
+      totalText: {
+        fontSize: 18,
+        fontWeight: 'bold',
+        marginBottom: 5,
+      },
+      expense: {
+        color: 'red',
+      },
+      income: {
+        color: 'green',
+      },
 });
 
 export default BudgetFormTab;
