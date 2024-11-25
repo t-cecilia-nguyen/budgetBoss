@@ -10,13 +10,13 @@ const BudgetsTab = ({ route }) => {
     expenseTransactions,
 		setExpenseTransactions,
 		setIncomeTransactions
-  } = useTransactions();  
+	} = useTransactions();  
 
 
 	useEffect(() => {
-    console.log('Income Transactions:', incomeTransactions);
-    console.log('Expense Transactions:', expenseTransactions);
-  }, [incomeTransactions, expenseTransactions]);
+		console.log('Income Transactions:', incomeTransactions);
+		console.log('Expense Transactions:', expenseTransactions);
+	}, [incomeTransactions, expenseTransactions]);
 
 	return (
 		<View>

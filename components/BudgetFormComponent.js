@@ -56,10 +56,10 @@ const BudgetFormTab = () => {
 
 
         const transactions = combineAndSortTransactions(incomeTransactions, expenseTransactions);
-    
+        
         const totalIncome = transactions.filter(t => t.Type === 'Income').reduce((sum, t) => sum + t.Amount, 0);
         const totalExpenses = transactions.filter(t => t.Type === 'Expense').reduce((sum, t) => sum + t.Amount, 0);
-      
+
         const netAmount = totalIncome - totalExpenses;
 
 

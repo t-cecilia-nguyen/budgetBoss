@@ -63,7 +63,7 @@ function SignOutComponent({ navigation }) {
 	useEffect(() => {
         const handleSignOut = async () => {
             try {
-                // await AsyncStorage.clear(); // Deletes AsyncStorage data - Use to reset if needed
+                await AsyncStorage.clear(); // Deletes AsyncStorage data - Use to reset if needed
                 Alert.alert('You have been signed out');
 				navigation.replace('Login');
             } catch (error) {

@@ -13,7 +13,7 @@ const FormTab = () => {
     const [formType, setFormType] = useState('Income');
 
     
-  const { incomeTransactions, expenseTransactions, setExpenseTransactions, setIncomeTransactions } = useTransactions();
+    const { incomeTransactions, expenseTransactions, setExpenseTransactions, setIncomeTransactions } = useTransactions();
 
 
     useEffect(() => {
@@ -23,24 +23,24 @@ const FormTab = () => {
 
     const handleSubmission = async () => {
         const newTransaction = {
-          Date: date,
-          Amount: parseFloat(amount),
-          Category: category,
-          Type: formType === 'Income' ? 'Income' : 'Expense',
+            Date: date,
+            Amount: parseFloat(amount),
+            Category: category,
+            Type: formType === 'Income' ? 'Income' : 'Expense',
         };
-      
+
         if (formType === 'Income') {
             setIncomeTransactions(prevState => [newTransaction, ...prevState]);
-          } else {
+        } else {
             setExpenseTransactions(prevState => [newTransaction, ...prevState]);
-          }
-      
+        }
+
         // Reset form data
         setDate('');
         setAmount('');
         setCategory('');
         setNotes('');
-      };
+    };
 
     return (
         <View >
