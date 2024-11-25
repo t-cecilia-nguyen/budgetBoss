@@ -1,24 +1,30 @@
-import React from 'react';
-import { StyleSheet, View, Text } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { View } from 'react-native';
+import TransactionList from '../components/TransactionListComponent'; 
+import { useTransactions } from '../navigations/bottomTabs';
 
 const TransactionsTab = () => {
-	return (
-		<View style={styles.container}>
-		<Text style={styles.text}>Transactions</Text>
-		</View>
-	);
-};
 
-const styles = StyleSheet.create({
-	container: {
-		flex: 1,
-		backgroundColor: '#fff',
-		alignItems: 'center',
-		justifyContent: 'center',
-	},
-	text: {
-		textAlign: 'center',
-	}
-});
+	const {
+    incomeTransactions,
+    expenseTransactions,
+  } = useTransactions();  
+
+	useEffect(() => {
+    console.log('Income Transactions:', incomeTransactions);
+    console.log('Expense Transactions:', expenseTransactions);
+  }, [incomeTransactions, expenseTransactions]);
+
+
+
+  return (
+    <View>
+      <TransactionList 
+        incomeTransactions={incomeTransactions} 
+        expenseTransactions={expenseTransactions} 
+      />
+    </View>
+  );
+};
 
 export default TransactionsTab;

@@ -3,53 +3,29 @@ import { View, Text, StyleSheet, Image } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage'; // Testing purposes only
 
 export default function MyAccount() {
-	const [firstName, setFirstName] = useState('');
-	const [lastName, setLastName] = useState('');
-	const [email, setEmail] = useState('');
+		const [firstName, setFirstName] = useState('');
+		const [lastName, setLastName] = useState('');
+		const [email, setEmail] = useState('');
+	
+		useEffect(() => {
+			const loadUserData = async () => {
+				try {
+					const storedFirstName = await AsyncStorage.getItem('userFirstName');
+					const storedLastName = await AsyncStorage.getItem('userLastName');
+					const storedEmail = await AsyncStorage.getItem('userEmail');
 
-	useEffect(() => {
-        const loadFirstName = async () => {
-            try {
-                const storedFirstName = await AsyncStorage.getItem('userFirstName');
-                if (storedFirstName) {
-                    setFirstName(storedFirstName);
-                }
-            } catch (error) {
-                console.log('Error retrieving userFirstName:', error);
-            } finally {
-                setLoading(false);
-            }
-        };
-
-		const loadLastName = async () => {
-			try {
-				const storedLastName = await AsyncStorage.getItem('userLastName');
-				if (storedLastName) {
-					setLastName(storedLastName);
+					if (storedFirstName) setFirstName(storedFirstName);
+					if (storedLastName) setLastName(storedLastName);
+					if (storedEmail) setEmail(storedEmail);
+					
+				} catch (error) {
+					console.log('Error retrieving data:', error);
+				} finally {
+					setLoading(false);
 				}
-			} catch (error) {
-				console.log('Error retrieving userLastName:', error);
-			} finally {
-				setLoading(false);
-			}
-		};
-
-		const loadEmail = async () => {
-			try {
-				const storedEmail = await AsyncStorage.getItem('userEmail');
-				if (storedEmail) {
-					setEmail(storedEmail);
-				}
-			} catch (error) {
-				console.log('Error retrieving userEmail:', error);
-			} finally {
-				setLoading(false);
-			}
-		};
-		loadFirstName();
-		loadLastName();
-		loadEmail();
-	}, []);
+			};
+			loadUserData();
+		}, []);
 
 	return (
 		<View style={styles.container}>

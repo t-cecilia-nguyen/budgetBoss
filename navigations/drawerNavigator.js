@@ -1,7 +1,7 @@
-import React, { useEffect } from 'react';
-import { Alert } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { Alert, View, Text, Image, StyleSheet } from 'react-native';
 import { FontAwesome } from 'react-native-vector-icons';
-import { createDrawerNavigator } from '@react-navigation/drawer';
+import { createDrawerNavigator, DrawerItemList } from '@react-navigation/drawer';
 import { Colors } from '../assets/colors';
 import AsyncStorage from '@react-native-async-storage/async-storage'; // Testing purposes only
 
@@ -14,7 +14,51 @@ import BottomTabs from './bottomTabs';
 
 const Drawer = createDrawerNavigator();
 
-// Placeholer for sign out
+function DrawerContent(props) {
+	const [firstName, setFirstName] = useState('');
+	const [lastName, setLastName] = useState('');
+	const [email, setEmail] = useState('');
+	const profilePicture = require('../assets/profilepic.png');
+
+	useEffect(() => {
+		const loadUserData = async () => {
+			try {
+				const storedFirstName = await AsyncStorage.getItem('userFirstName');
+				const storedLastName = await AsyncStorage.getItem('userLastName');
+				const storedEmail = await AsyncStorage.getItem('userEmail');
+
+				if (storedFirstName) setFirstName(storedFirstName);
+				if (storedLastName) setLastName(storedLastName);
+				if (storedEmail) setEmail(storedEmail);
+				
+			} catch (error) {
+				console.log('Error retrieving data:', error);
+			} finally {
+				setLoading(false);
+			}
+		};
+
+		loadUserData();
+	}, []);
+
+	return (
+		<View style={styles.drawerContainer}>
+		<View style={styles.profileImageContainer}>
+        <Image
+			source={profilePicture}
+			style={styles.profileImage}
+        />
+		</View>
+		<View style={styles.profileInfoContainer}>
+			<Text style={styles.profileName}>{firstName} {lastName}</Text>
+			<Text style={styles.profileEmail}>{email}</Text>
+		</View>
+		<DrawerItemList {...props} />
+    </View>
+	);
+}
+
+// Placeholder for sign out
 function SignOutComponent({ navigation }) {
 	useEffect(() => {
         const handleSignOut = async () => {
@@ -28,7 +72,6 @@ function SignOutComponent({ navigation }) {
         };
         handleSignOut();
     }, [navigation]);
-
 		return null;
 }
 
@@ -42,6 +85,7 @@ export default function DrawerNavigator() {
 			},
 			drawerActiveTintColor: Colors.primaryBlue,
 		}}
+		drawerContent={(props) => <DrawerContent {...props} />}
 		>
 		<Drawer.Screen 
 			name="My Account" 
@@ -121,3 +165,33 @@ export default function DrawerNavigator() {
 		</Drawer.Navigator>
 	);
 }
+
+const styles = StyleSheet.create({
+	drawerContainer: {
+	flex: 1,
+	paddingTop: 20,
+	marginTop: 30,
+	margin: 20
+	},
+	profileImageContainer: {
+	alignItems: 'left',
+	marginBottom: 10,
+	},
+	profileImage: {
+	width: 120,
+	height: 120,
+	borderRadius: 50,
+	},
+	profileInfoContainer: {
+	paddingLeft: 20,
+	marginBottom: 30,
+	},
+	profileName: {
+	fontSize: 18,
+	fontWeight: 'bold',
+	},
+	profileEmail: {
+	fontSize: 14,
+	color: '#777',
+	},
+});
