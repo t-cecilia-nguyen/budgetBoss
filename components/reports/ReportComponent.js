@@ -6,7 +6,13 @@ import CustomButtonTab from "./CustomButtonTab";
 import ReportPrevMonthComponent from "./ReportPrevMonthComponent ";
 import ReportThisMonthComponent from "./ReportThisMonthComponent";
 
-const ReportComponent = () => {
+const ReportComponent = ({
+  incomeTransactions,
+  expenseTransactions,
+  setExpenseTransactions,
+  setIncomeTransactions,
+}) => {
+  
   const [selectedButton, setSelectedButton] = useState("This Month");
 
   return (
@@ -33,8 +39,18 @@ const ReportComponent = () => {
         <HorizontalLine />
       </View>
 
-      {selectedButton === "Prev Month" && <ReportPrevMonthComponent />}
-      {selectedButton === "This Month" && <ReportThisMonthComponent />}
+      {selectedButton === "Prev Month" && 
+        <ReportPrevMonthComponent 
+          incomeTransactions={incomeTransactions}
+          expenseTransactions={expenseTransactions}
+        />}
+      {selectedButton === "This Month" &&
+       <ReportThisMonthComponent 
+          incomeTransactions={incomeTransactions}
+          expenseTransactions={expenseTransactions}
+          setExpenseTransactions={setExpenseTransactions}
+          setIncomeTransactions={setIncomeTransactions}
+       />}
     </View>
   );
 };

@@ -1,6 +1,6 @@
 import React from "react";
 import { StyleSheet, View, Text } from "react-native";
-import ReportComponent from "../components/ReportComponent";
+import ReportComponent from "../components/reports/ReportComponent";
 import { useTransactions } from '../navigations/bottomTabs';
 import { useEffect } from 'react';
 

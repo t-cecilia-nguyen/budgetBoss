@@ -33,7 +33,6 @@ export default ProgressBar;
 
 const styles = StyleSheet.create({
   container: {
-    borderWidth: 1,
     width: "90%",
     height: 20,
     justifyContent: "center",

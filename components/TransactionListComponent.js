@@ -2,6 +2,7 @@ import React from 'react';
 import { StyleSheet, View, Text } from 'react-native';
 import { useEffect, useState } from 'react';
 import { useTransactions } from '../navigations/bottomTabs';
+import { ScrollView } from 'react-native-gesture-handler';
 
 
 const combineAndSortTransactions = (incomeTransactions = [], expenseTransactions = []) => {
@@ -41,6 +42,7 @@ const TransactionList = () => {
   }, [incomeTransactions, expenseTransactions]);
 
   return (
+    <ScrollView>
     <View>
       <View style={styles.totalsContainer}>
         <Text style={styles.totalText}>Total Income: <Text style={styles.income}>+${totalIncome}</Text></Text>
@@ -65,6 +67,7 @@ const TransactionList = () => {
         </View>
       ))}
     </View>
+    </ScrollView>
   );
 };
 
