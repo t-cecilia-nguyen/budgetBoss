@@ -1,18 +1,21 @@
 import React, { useState } from "react";
 import { View, StyleSheet } from "react-native";
 
-import HorizontalLine from "./HorizontalLine";
-import CustomButtonTab from "./CustomButtonTab";
-import ReportPrevMonthComponent from "./ReportPrevMonthComponent ";
-import ReportThisMonthComponent from "./ReportThisMonthComponent";
+import HorizontalLine from "./reports/HorizontalLine";
+import CustomButtonTab from "./reports/CustomButtonTab";
+import ReportPrevMonthComponent from "./reports/ReportPrevMonthComponent ";
+import ReportThisMonthComponent from "./reports/ReportThisMonthComponent";
 
 const ReportComponent = ({
   incomeTransactions,
   expenseTransactions,
   setExpenseTransactions,
   setIncomeTransactions,
+  budgetEntries,
+  setBudgetEntries
 }) => {
-  
+
+
   const [selectedButton, setSelectedButton] = useState("This Month");
 
   return (
@@ -43,6 +46,7 @@ const ReportComponent = ({
         <ReportPrevMonthComponent 
           incomeTransactions={incomeTransactions}
           expenseTransactions={expenseTransactions}
+          budgetEntries={budgetEntries}
         />}
       {selectedButton === "This Month" &&
        <ReportThisMonthComponent 
@@ -50,6 +54,8 @@ const ReportComponent = ({
           expenseTransactions={expenseTransactions}
           setExpenseTransactions={setExpenseTransactions}
           setIncomeTransactions={setIncomeTransactions}
+          budgetEntries={budgetEntries}
+          setBudgetEntries={setBudgetEntries}
        />}
     </View>
   );

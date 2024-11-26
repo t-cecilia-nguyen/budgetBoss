@@ -1,7 +1,7 @@
 import React from "react";
 import { StyleSheet, View, Text } from "react-native";
-import ReportComponent from "../components/reports/ReportComponent";
-import { useTransactions } from '../navigations/bottomTabs';
+import ReportComponent from "../components/ReportComponent";
+import { useBudgets, useTransactions } from '../navigations/bottomTabs';
 import { useEffect } from 'react';
 
 const ReportsTab = ({ route }) => {
@@ -11,6 +11,8 @@ const ReportsTab = ({ route }) => {
 		setExpenseTransactions,
 		setIncomeTransactions
   } = useTransactions();  
+
+  const { budgetEntries, setBudgetEntries } = useBudgets();
 
 
 	useEffect(() => {
@@ -26,6 +28,8 @@ const ReportsTab = ({ route }) => {
 			expenseTransactions={expenseTransactions} 
 			setExpenseTransactions={setExpenseTransactions}
 			setIncomeTransactions={setIncomeTransactions}
+			budgetEntries={budgetEntries}
+			setBudgetEntries={setBudgetEntries}
 		/>
 		</View>
 	);

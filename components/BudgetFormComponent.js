@@ -1,8 +1,10 @@
-import React, { useState } from 'react';
+import React, { createContext, useState } from 'react';
 import { StyleSheet, View, Text, TextInput, TouchableOpacity } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
 import { FlatList } from 'react-native-gesture-handler';
-import { useTransactions } from '../navigations/bottomTabs';
+import { useBudgets, useTransactions } from '../navigations/bottomTabs';
+import { BudgetContext } from '../navigations/bottomTabs';
+
 
 const BudgetFormTab = () => {
 
@@ -12,11 +14,12 @@ const BudgetFormTab = () => {
     const [category, setCategory] = useState('');
     const [notes, setNotes] = useState('');
 
-    const [budgetEntries, setBudgetEntries] = useState('');
+    //const [budgetEntries, setBudgetEntries] = useState('');
     const [viewMode, setViewMode] = useState('Form');
 
     const { incomeTransactions, expenseTransactions, setExpenseTransactions, setIncomeTransactions } = useTransactions();
-    
+    const { budgetEntries, setBudgetEntries } = useBudgets();
+
     const handleSubmission = () => {
         
         const newBudgetEntry = {
@@ -32,6 +35,7 @@ const BudgetFormTab = () => {
             const updatedBudget = [...prevEntries, newBudgetEntry];
             console.log('Updated Budget Entries:', updatedBudget);
             return updatedBudget;
+            
         });
 
         console.log('Added entry to Budget:', newBudgetEntry);

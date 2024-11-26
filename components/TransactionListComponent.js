@@ -21,7 +21,7 @@ const groupTransactionsByDate = (transactions) => {
   }, {});
 };
 
-const TransactionList = () => {
+export const TransactionList = () => {
 
   const { incomeTransactions, expenseTransactions } = useTransactions();
 
@@ -71,6 +71,36 @@ const TransactionList = () => {
   );
 };
 
+
+export const SmallTransactionList = () => {
+
+  const { incomeTransactions, expenseTransactions } = useTransactions();
+
+
+  const transactions = combineAndSortTransactions(incomeTransactions, expenseTransactions);
+
+  const groupedTransactions = groupTransactionsByDate(transactions);
+  return (
+    <ScrollView>
+      {/* Display grouped transactions */}
+      {Object.keys(groupedTransactions).map((date, index) => (
+        <View key={index} style={styles.transactionGroup}>
+          <Text style={styles.dateText}>{date}</Text>
+          {groupedTransactions[date].map((transaction, idx) => (
+            <View key={idx} style={styles.transaction}>
+              <View style={styles.row}>
+                <Text style={styles.text}>{transaction.Category}</Text>
+                <Text style={[styles.text, transaction.Type === 'Expense' ? styles.expense : styles.income]}>
+                  {transaction.Type === 'Expense' ? '-' : '+'}${transaction.Amount}
+                </Text>
+              </View>
+            </View>
+          ))}
+        </View>
+      ))}
+    </ScrollView>
+    );
+  }
 const styles = StyleSheet.create({
   container: {
     flex: 1,

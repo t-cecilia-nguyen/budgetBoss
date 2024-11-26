@@ -1,35 +1,55 @@
-import React, { useState } from "react";
-import { View, Text, StyleSheet, Dimensions, ScrollView } from "react-native";
+import React, { useState , useContext} from "react";
+import { View, Text, StyleSheet, Dimensions, ScrollView , FlatList} from "react-native";
 import { FontAwesome } from "react-native-vector-icons";
 
 import { Colors } from "../../assets/colors";
 import ProgressBar from "./ProgressBar";
 import LineGraph from "./LineGraph";
-import TransactionList from "../TransactionListComponent";
+import {SmallTransactionList} from "../TransactionListComponent";
+
+
 
 const { width: screenWidth } = Dimensions.get("window");
 
 const ReportThisMonthComponent = ({
   incomeTransactions,
   expenseTransactions,
+  budgetEntries
 }) => {
-  const totalIncome = incomeTransactions.reduce(
-    (sum, txn) => sum + txn.Amount,
-    0
-  );
-  const totalExpense = expenseTransactions.reduce(
-    (sum, txn) => sum + txn.Amount,
-    0
-  );
-  const budget = totalIncome - totalExpense;
 
-  const expensePercentage = totalIncome > 0 ? totalExpense / totalIncome : 0;
+  console.log("Budget Entry:", budgetEntries);
+  // Group transactions by category
+  const groupByCategory = (transactions) =>
+    transactions.reduce((acc, txn) => {
+      const { Category, Amount } = txn;
+      if (!acc[Category]) {
+        acc[Category] = 0;
+      }
+      acc[Category] += Amount;
+      return acc;
+    }, {});
+
+  const budgetByCategory = groupByCategory(budgetEntries);
+  const expenseByCategory = groupByCategory(expenseTransactions);
+  const incomeByCategory = groupByCategory(incomeTransactions);
+
+  const categories = [
+    ...new Set([...Object.keys(budgetByCategory), ...Object.keys(expenseByCategory)]),
+  ];
+
+  // Calculate total budget and expense
+  const totalIncome = Object.values(incomeByCategory).reduce((sum, val) => sum + val, 0);
+  const totalExpense = Object.values(expenseByCategory).reduce((sum, val) => sum + val, 0);
+  const totalBudget = Object.values(budgetByCategory).reduce((sum, val) => sum + val, 0);
+  const netAmount = totalBudget - totalExpense;
+  const expensePercentage = totalBudget > 0 ? totalExpense / totalBudget : 0;
 
   const today = new Date();
-  const lastDayOfMonth = new Date(today.getFullYear(), today.getMonth() + 1, 0); // 0th day of the next month is the last day of the current month
-
+  const lastDayOfMonth = new Date(today.getFullYear(), today.getMonth() + 1, 0);
   const diffTime = lastDayOfMonth - today;
   const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+
 
   return (
     <View style={styles.container}>
@@ -50,36 +70,47 @@ const ReportThisMonthComponent = ({
           <ProgressBar newValue={expensePercentage} />
           <View style={styles.amountYouCanSpend}>
             <Text style={styles.textBold}>Amount you can spend</Text>
-            <Text style={ [{color: Colors.green}, styles.textBold] }>${budget}</Text>
+            <Text style={[{ color: Colors.green }, styles.textBold]}>${netAmount}</Text>
           </View>
           <View style={styles.horizontalBox}>
             <View style={styles.totalBudget}>
               <Text style={styles.textBold}>Total Budget</Text>
-              <Text style={ [{color: Colors.green}, styles.textBold] }>${totalIncome}</Text>
+              <Text style={[{ color: Colors.green }, styles.textBold]}>${totalBudget}</Text>
             </View>
             <View style={styles.totalSpent}>
               <Text style={styles.textBold}>Total Spent</Text>
-              <Text style={ [{color: Colors.green}, styles.textBold] }>${totalExpense}</Text>
+              <Text style={[{ color: Colors.green }, styles.textBold]}>${totalExpense}</Text>
             </View>
             <View style={styles.dayofmonthLeft}>
               <Text style={styles.textBold}>End of Month</Text>
-              <Text style={ [{color: Colors.green}, styles.textBold] }>{diffDays} days</Text>
+              <Text style={[{ color: Colors.green }, styles.textBold]}>{diffDays} days</Text>
             </View>
           </View>
         </View>
+        
+        
+
+
+        {/*Transaction History List*/}
+
 
         <View style={styles.card}>
           <Text style={styles.cardText}>Transaction History</Text>
           <ScrollView nestedScrollEnabled contentContainerStyle={{ paddingTop: 20 }}>
             <View style={styles.transactionList}>
-              <TransactionList />
+              <SmallTransactionList />
             </View>
           </ScrollView>
         </View>
 
+        {/*Report This Month*/}
         <View style={styles.card}>
           <Text style={styles.cardText}>Report This Month</Text>
-          <LineGraph data={{ incomeTransactions, expenseTransactions }} />
+          {/* <LineGraph 
+          incomeTransactions={incomeTransactions}
+          expenseTransactions={expenseTransactions}
+          totalIncome={totalIncome}
+          totalExpense={totalExpense} /> */}
         </View>
 
         <View style={styles.bottomSpacer} />
@@ -167,7 +198,7 @@ const styles = StyleSheet.create({
   transactionList: {
     width: "95%",
     height: 200,
-    marginTop: 30,
+    marginTop: 50,
   },
   spacer: {
     height: 50,
