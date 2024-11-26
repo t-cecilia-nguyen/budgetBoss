@@ -4,7 +4,6 @@ import { FontAwesome } from "react-native-vector-icons";
 
 import { Colors } from "../../assets/colors";
 import ProgressBar from "./ProgressBar";
-import LineGraph from "./LineGraph";
 import TransactionList from "../TransactionListComponent";
 
 const { width: screenWidth } = Dimensions.get("window");

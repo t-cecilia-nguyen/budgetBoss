@@ -5,5 +5,7 @@ export let initialExpenses = [
 ];
 
 export let initialIncome = [
-  { Date: '2024-01-01', Amount: 1500, Category: 'Salary', Type: 'Income' },
+  { Date: '2024-01-01', Amount: 1000, Category: 'Salary', Type: 'Income' },
+  { Date: '2024-02-01', Amount: 2000, Category: 'Salary', Type: 'Income' },
+
 ];

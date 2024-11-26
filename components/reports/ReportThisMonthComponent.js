@@ -4,8 +4,8 @@ import { FontAwesome } from "react-native-vector-icons";
 
 import { Colors } from "../../assets/colors";
 import ProgressBar from "./ProgressBar";
-import LineGraph from "./LineGraph";
 import {SmallTransactionList} from "../TransactionListComponent";
+import SummaryChart from "./SummaryChart";
 
 
 
@@ -111,6 +111,11 @@ const ReportThisMonthComponent = ({
           expenseTransactions={expenseTransactions}
           totalIncome={totalIncome}
           totalExpense={totalExpense} /> */}
+
+          <SummaryChart incomeTransactions={incomeTransactions}
+          expenseTransactions={expenseTransactions}
+          totalIncome={totalIncome}
+          totalExpense={totalExpense} />
         </View>
 
         <View style={styles.bottomSpacer} />
