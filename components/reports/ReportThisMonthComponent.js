@@ -1,55 +1,85 @@
-import React, { useState , useContext} from "react";
-import { View, Text, StyleSheet, Dimensions, ScrollView , FlatList} from "react-native";
+import React, { useState, useContext } from "react";
+import {
+  View,
+  Text,
+  StyleSheet,
+  Dimensions,
+  ScrollView,
+  FlatList,
+} from "react-native";
 import { FontAwesome } from "react-native-vector-icons";
 
 import { Colors } from "../../assets/colors";
 import ProgressBar from "./ProgressBar";
-import {SmallTransactionList} from "../TransactionListComponent";
 import SummaryChart from "./SummaryChart";
-
-
 
 const { width: screenWidth } = Dimensions.get("window");
 
 const ReportThisMonthComponent = ({
   incomeTransactions,
   expenseTransactions,
-  budgetEntries
+  budgetEntries,
 }) => {
 
-  console.log("Budget Entry:", budgetEntries);
-  // Group transactions by category
-  const groupByCategory = (transactions) =>
-    transactions.reduce((acc, txn) => {
-      const { Category, Amount } = txn;
-      if (!acc[Category]) {
-        acc[Category] = 0;
-      }
-      acc[Category] += Amount;
-      return acc;
-    }, {});
+  // Get the current month and year
+  const today = new Date();
+  const currentMonth = today.getMonth();
+  const currentYear = today.getFullYear();
 
-  const budgetByCategory = groupByCategory(budgetEntries);
-  const expenseByCategory = groupByCategory(expenseTransactions);
-  const incomeByCategory = groupByCategory(incomeTransactions);
+  const isValidDate = (date) => !isNaN(new Date(date).getTime());
 
-  const categories = [
-    ...new Set([...Object.keys(budgetByCategory), ...Object.keys(expenseByCategory)]),
-  ];
+  
+  const filterByCurrentMonth = (transactions) =>
+    transactions.filter((txn) => {
+      const date = new Date(txn.Date); // Ensure txn.Date is converted to a Date object
+      console.log("Parsed Date:", date); // Debug
+      return (
+        isValidDate(txn.Date) &&
+        date.getMonth() === currentMonth &&
+        date.getFullYear() === currentYear
+      );
+    });
 
-  // Calculate total budget and expense
-  const totalIncome = Object.values(incomeByCategory).reduce((sum, val) => sum + val, 0);
-  const totalExpense = Object.values(expenseByCategory).reduce((sum, val) => sum + val, 0);
-  const totalBudget = Object.values(budgetByCategory).reduce((sum, val) => sum + val, 0);
+    const filterBudgetEntriesByCurrentMonth = (entries) =>
+      entries.filter((entry) => {
+        const startDay = new Date(entry.StartDate);
+        const endDay = new Date(entry.EndDate);
+        return (
+          isValidDate(entry.StartDate) &&
+          isValidDate(entry.EndDate) &&
+          ((endDay.getMonth() === currentMonth && endDay.getFullYear() === currentYear) ||
+            (startDay.getMonth() === currentMonth && startDay.getFullYear() === currentYear))
+        );
+      });
+
+
+  const filteredExpenseTransactions = filterByCurrentMonth(expenseTransactions);
+  const filteredBudgetEntries = filterBudgetEntriesByCurrentMonth(budgetEntries);
+  const filteredIncomeTransactions = filterByCurrentMonth(incomeTransactions);
+
+  console.log("FILTERED")
+  console.log(filteredExpenseTransactions, filteredBudgetEntries, filteredIncomeTransactions);
+
+ // Calculate totals directly for the current month
+const totalIncome = filteredIncomeTransactions.reduce(
+  (sum, txn) => sum + txn.Amount,
+  0
+);
+const totalExpense = filteredExpenseTransactions.reduce(
+  (sum, txn) => sum + txn.Amount,
+  0
+);
+const totalBudget = filteredBudgetEntries.reduce(
+  (sum, txn) => sum + txn.Amount,
+  0
+);
   const netAmount = totalBudget - totalExpense;
   const expensePercentage = totalBudget > 0 ? totalExpense / totalBudget : 0;
 
-  const today = new Date();
-  const lastDayOfMonth = new Date(today.getFullYear(), today.getMonth() + 1, 0);
+  // Days left in the current month
+  const lastDayOfMonth = new Date(currentYear, currentMonth + 1, 0);
   const diffTime = lastDayOfMonth - today;
   const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-
-
 
   return (
     <View style={styles.container}>
@@ -70,52 +100,43 @@ const ReportThisMonthComponent = ({
           <ProgressBar newValue={expensePercentage} />
           <View style={styles.amountYouCanSpend}>
             <Text style={styles.textBold}>Amount you can spend</Text>
-            <Text style={[{ color: Colors.green }, styles.textBold]}>${netAmount}</Text>
+            <Text style={[{ color: Colors.green }, styles.textBold]}>
+              ${netAmount}
+            </Text>
           </View>
           <View style={styles.horizontalBox}>
             <View style={styles.totalBudget}>
               <Text style={styles.textBold}>Total Budget</Text>
-              <Text style={[{ color: Colors.green }, styles.textBold]}>${totalBudget}</Text>
+              <Text style={[{ color: Colors.green }, styles.textBold]}>
+                ${totalBudget}
+              </Text>
             </View>
             <View style={styles.totalSpent}>
               <Text style={styles.textBold}>Total Spent</Text>
-              <Text style={[{ color: Colors.green }, styles.textBold]}>${totalExpense}</Text>
+              <Text style={[{ color: Colors.green }, styles.textBold]}>
+                ${totalExpense}
+              </Text>
             </View>
             <View style={styles.dayofmonthLeft}>
               <Text style={styles.textBold}>End of Month</Text>
-              <Text style={[{ color: Colors.green }, styles.textBold]}>{diffDays} days</Text>
+              <Text style={[{ color: Colors.green }, styles.textBold]}>
+                {diffDays} days
+              </Text>
             </View>
           </View>
         </View>
+
         
-        
-
-
-        {/*Transaction History List*/}
-
-
-        <View style={styles.card}>
-          <Text style={styles.cardText}>Transaction History</Text>
-          <ScrollView nestedScrollEnabled contentContainerStyle={{ paddingTop: 20 }}>
-            <View style={styles.transactionList}>
-              <SmallTransactionList />
-            </View>
-          </ScrollView>
-        </View>
-
         {/*Report This Month*/}
         <View style={styles.card}>
           <Text style={styles.cardText}>Report This Month</Text>
-          {/* <LineGraph 
-          incomeTransactions={incomeTransactions}
-          expenseTransactions={expenseTransactions}
-          totalIncome={totalIncome}
-          totalExpense={totalExpense} /> */}
 
-          <SummaryChart incomeTransactions={incomeTransactions}
-          expenseTransactions={expenseTransactions}
-          totalIncome={totalIncome}
-          totalExpense={totalExpense} />
+          <SummaryChart
+            incomeTransactions={incomeTransactions}
+            expenseTransactions={expenseTransactions}
+            totalIncome={totalIncome}
+            totalExpense={totalExpense}
+          />
         </View>
 
         <View style={styles.bottomSpacer} />
@@ -197,8 +218,8 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     marginVertical: 10,
   },
-  textBold:{
-    fontWeight:'bold'
+  textBold: {
+    fontWeight: "bold",
   },
   transactionList: {
     width: "95%",

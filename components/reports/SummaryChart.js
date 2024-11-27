@@ -2,6 +2,11 @@ import { View, Text, StyleSheet } from 'react-native';
 import React from 'react';
 import { LineChart } from 'react-native-gifted-charts';
 
+import HorizontalLine from "./HorizontalLine";
+
+const thisMonth = new Date().getMonth();
+
+
 const SummaryChart = ({
   incomeTransactions,
   expenseTransactions,
@@ -9,55 +14,61 @@ const SummaryChart = ({
   totalExpense,
 }) => {
 
-    console.log('Income Transactions:', incomeTransactions);
-    console.log('Expense Transactions:', expenseTransactions);
-    const incomeData = (incomeTransactions || []).map(item => {
-          return { 
-          value: Number(item.Amount), 
-        };
-      });
+      
 
       const expenseData = (expenseTransactions || []).map(item => {
-        const date = new Date(item.Date); // Convert the date string to a Date object
-        const formattedDate = date.toLocaleDateString('en-GB', {
-            month: '2-digit', 
-            day: '2-digit',   
-            year: '2-digit' 
-          });
+        const date = new Date(item.Date); 
+        if(date.getMonth() === thisMonth){
+          const formattedDate = date.toLocaleDateString('en-GB', {
+              month: '2-digit', 
+              day: '2-digit',   
+            });
           
-          return { 
-          value: Number(item.Amount), 
-          label: formattedDate
+            return { 
+              value: Number(item.Amount), 
+              label: formattedDate
+            }
         };
-      });
+        return undefined;
+      }).filter(item => item !== undefined); // Filter out undefined values
+     
    
 
 
   return (
     <View style={styles.container}>
-      <View style={styles.chartContainer}>
+      <View style={styles.headerBox}>
+            <View style={styles.flexColumnBox}>
+                <Text style={styles.textBold}>Total Spent</Text>
+                <Text style={[styles.textBold, {color: 'red'}]}>{totalExpense}</Text>
+            </View>
+            <View style={styles.flexColumnBox}>
+                <Text style={styles.textBold}>Total Income</Text>
+                <Text style={[styles.textBold, {color: 'grey'}]}>{totalIncome}</Text>
+            </View>
+        </View>
+        <HorizontalLine width='100%' style={styles.customLine}/>
+
+      <View style={styles.lineGraphContainer}>
         <LineChart
           data={expenseData}
-          noOfSections={8}
-          spacing={150}
+          noOfSections={4}
+          spacing={110}
+          curved={true}
           color='red'
-          yAxisColor={'red'}
-          showYAxisIndices
-          hideDataPoints
-          yAxisIndicesColor={'red'}
+          yAxisColor={'grey'}
+          dataPointsColor='red'
+          yAxisIndicesColor={'grey'}
           yAxisIndicesWidth={10}
-            secondaryData={incomeData}
-            secondaryLineConfig={{ color: 'green', strokeWidth: 2 }} // Configure secondary line
-            xAxisLabelTextStyle={{width: 80, marginLeft: -26}}
-        xAxisIndicesHeight={10}
+          xAxisIndicesHeight={10}
         xAxisIndicesWidth={2}
         width={270}
-          height={180}
+          height={135}
           style={styles.chart}
 
         />
       </View>
-
+     
     </View>
   );
 };
@@ -74,8 +85,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'flex-start',
   },
-  chartContainer: {
-  },
+  
   chart: {
     borderRadius: 16,
   },
@@ -89,11 +99,12 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   headerBox: {
+
     alignContent: 'space-between',
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    justifyContent: 'space-around',
     alignItems: 'center',
-    width: '90%',
+    width: '100%',
     position: 'absolute',
     top: 10,
   },
