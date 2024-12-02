@@ -2,40 +2,44 @@ import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert } from 'react-native';
 import { FontAwesome } from 'react-native-vector-icons';
 import { Colors } from '../assets/colors';
-import AsyncStorage from '@react-native-async-storage/async-storage'; // Testing purposes only
 
 export default function SignUpScreen({ navigation }) {
-
     const [firstName, setFirstName] = useState('');
     const [lastName, setLastName] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
 
-    const handleSignUp = async() => {
-        if (!password || !confirmPassword) {
-            Alert.alert('Signup Failed', 'Password cannot be empty');
+    const handleSignUp = async () => {
+        if (!firstName || !lastName || !email || !password || !confirmPassword) {
+            Alert.alert('Signup Failed', 'All fields are required');
             return;
         }
-
+        
         if (password !== confirmPassword) {
             Alert.alert('Signup Failed', 'Passwords do not match');
             return;
         }
-
-        // Save user data
+        
         try {
-            await AsyncStorage.setItem('userEmail', email);
-            await AsyncStorage.setItem('userFirstName', firstName);
-            await AsyncStorage.setItem('userLastName', lastName);
-            await AsyncStorage.setItem('userPassword', password); 
-
-            Alert.alert('Signup Successful', 'Your account has been created');
-            navigation.navigate('Login'); // Navigate to the login screen
-        } catch (error) {
-            Alert.alert('Signup Failed', 'Error saving user data');
-        }
-    };
+            const response = await fetch('http://10.0.2.2:3000/api/users/signup', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ firstName, lastName, email, password }),
+            });
+            
+            const result = await response.json();
+            
+            if (response.ok) {
+                Alert.alert('Signup Successful', result.message);
+                navigation.navigate('Login'); // Navigate to login screen
+            } else {
+                Alert.alert('Signup Failed', result.message);
+            }
+            } catch (error) {
+            Alert.alert('Error', 'Unable to connect to the server');
+            }
+        };
 
     return (
         <View style={styles.container}>

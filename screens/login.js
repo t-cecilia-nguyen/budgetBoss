@@ -1,37 +1,52 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert } from 'react-native';
 import { FontAwesome } from 'react-native-vector-icons';
 import { Colors } from '../assets/colors';
-import AsyncStorage from '@react-native-async-storage/async-storage'; // Testing purposes only
 
 export default function LoginScreen({ navigation }) {
-
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
 
-    useEffect(() => {
-        // Check if user email exists in AsyncStorage and set it in state
-        const loadUserData = async () => {
-            const storedEmail = await AsyncStorage.getItem('userEmail');
-            if (storedEmail) {
-                setEmail(storedEmail);
-            }
-        };
-        loadUserData();
-    }, []);
-
+    // Login
     const handleLogin = async () => {
-        const storedEmail = await AsyncStorage.getItem('userEmail');
-        const storedPassword = await AsyncStorage.getItem('userPassword');
+        // Validate input
+        if (!email && !password) {
+            Alert.alert('Validation Error', 'Email and password cannot be empty.');
+            return;
+        }
 
-        if (email === storedEmail && password === storedPassword) {
-            Alert.alert('Login Successful');
-            navigation.replace('MainApp'); // Navigate to main screen
-        } else {
-            Alert.alert('Invalid credentials');
+        if (!email) {
+            Alert.alert('Validation Error', 'Email is required.');
+            return;
+        }
+
+        if (!password) {
+            Alert.alert('Validation Error', 'Password is required.');
+            return;
+        }
+
+        try {
+            const response = await fetch('http://10.0.2.2:3000/api/users/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ email, password }),
+            });
+
+            const data = await response.json();
+
+            if (response.ok) {
+                Alert.alert('Login Successful');
+                navigation.replace('MainApp'); // Navigate to main screen
+            } else {
+                Alert.alert(data.message || 'Invalid credentials');
+            }
+        } catch (error) {
+            console.error('Error logging in:', error);
+            Alert.alert('An error occurred. Please try again.');
         }
     };
-
 
     return (
         <View style={styles.container}>
