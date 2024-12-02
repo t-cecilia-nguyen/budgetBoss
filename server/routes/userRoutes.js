@@ -105,5 +105,4 @@ router.get('/api/users/:id', async (req, res) => {
     }
 });
 
-
 module.exports = router;

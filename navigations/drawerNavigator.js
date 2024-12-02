@@ -5,6 +5,7 @@ import { createDrawerNavigator, DrawerItemList } from '@react-navigation/drawer'
 import { Colors } from '../assets/colors';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { UserContext } from '../context/userContext';
+import { SettingsStackNavigator } from './settingsNavigator';
 
 // Import screens
 import MyAccount from '../screens/myAccount';
@@ -134,7 +135,7 @@ export default function DrawerNavigator() {
 		/>
 		<Drawer.Screen
 			name="Settings"
-			component={Settings}
+			component={SettingsStackNavigator}
 			options={({ navigation }) => ({
 			drawerIcon: ({ color, size }) => (
 				<FontAwesome name="cog" color={color} size={size} />

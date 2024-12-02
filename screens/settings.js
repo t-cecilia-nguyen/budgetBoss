@@ -1,42 +1,48 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, Switch } from 'react-native';
+import { View, Text, StyleSheet, Switch, TouchableOpacity } from 'react-native';
 import { Colors } from '../assets/colors';
+import { useNavigation } from '@react-navigation/native';
 
-export default function NotificationToggle() {
+export default function Settings() {
 	const [isEnabled, setIsEnabled] = useState(false);
-
+	const navigation = useNavigation();
 	const toggleSwitch = () => setIsEnabled(previousState => !previousState);
+	
+	const navigateToContact = () => {
+		navigation.navigate('Contact'); // Navigate to contact screen
+	};
 
 	return (
-		<View style={styles.container}>	
-			<Text style={styles.title}>Settings</Text>
-			<View style={styles.titleContainer}>	
-				<Text style={styles.titleText}>GENERAL</Text>
-			</View>
+		<View style={styles.container}>
+		<Text style={styles.title}>Settings</Text>
+		<View style={styles.sectionContainer}>
+			<Text style={styles.titleText}>GENERAL</Text>
 			<View style={styles.toggleContainer}>
-				<Text style={styles.text}>Notifications</Text>
-				<Switch
-					trackColor={{ false: '#767577', true: Colors.green }} 
-					thumbColor={isEnabled ? '#FFFFFF' : '#F4F3F4'}
-					onValueChange={toggleSwitch}
-					value={isEnabled}
-				/>
+			<Text style={styles.text}>Notifications</Text>
+			<Switch
+				trackColor={{ false: '#767577', true: Colors.green }} 
+				thumbColor={isEnabled ? '#FFFFFF' : '#F4F3F4'}
+				onValueChange={toggleSwitch}
+				value={isEnabled}
+			/>
 			</View>
-			<View style={styles.textContainer}>
-				<Text style={styles.text}>Delete Account</Text>
-			</View>
-			<View style={styles.titleContainer}>	
-				<Text style={styles.titleText}>FEEDBACK</Text>
-			</View>
-			<View style={styles.textContainer}>
-				<Text style={styles.text}>Report a bug</Text>
-			</View>
-			<View style={styles.textContainer}>
-				<Text style={styles.text}>Contact</Text>
-			</View>
-			<View style={styles.textContainer}>
-				<Text style={styles.text}>Send feedback</Text>
-			</View>
+			<TouchableOpacity style={styles.textContainer} onPress={() => { /* Handle Send feedback action here */ }}>
+			<Text style={styles.text}>Delete Account</Text>
+			</TouchableOpacity>
+		</View>
+
+		{/* Settings Options */}
+		<View style={styles.sectionContainer}>
+			<Text style={styles.titleText}>FEEDBACK</Text>
+
+			<TouchableOpacity style={styles.textContainer} onPress={() => { /* Handle Send feedback action here */ }}>
+			<Text style={styles.text}>Report a bug</Text>
+			</TouchableOpacity>
+
+			<TouchableOpacity style={styles.textContainer} onPress={navigateToContact}>
+			<Text style={styles.text}>Contact</Text>
+			</TouchableOpacity>
+		</View>
 		</View>
 	);
 }
