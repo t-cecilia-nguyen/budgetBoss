@@ -1,31 +1,21 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { View, Text, StyleSheet, Image } from 'react-native';
-import AsyncStorage from '@react-native-async-storage/async-storage'; // Testing purposes only
+import { UserContext } from '../context/userContext';
 
 export default function MyAccount() {
-		const [firstName, setFirstName] = useState('');
-		const [lastName, setLastName] = useState('');
-		const [email, setEmail] = useState('');
+	const { user } = useContext(UserContext);
+	const [firstName, setFirstName] = useState('');
+	const [lastName, setLastName] = useState('');
+	const [email, setEmail] = useState('');
 	
-		useEffect(() => {
-			const loadUserData = async () => {
-				try {
-					const storedFirstName = await AsyncStorage.getItem('userFirstName');
-					const storedLastName = await AsyncStorage.getItem('userLastName');
-					const storedEmail = await AsyncStorage.getItem('userEmail');
-
-					if (storedFirstName) setFirstName(storedFirstName);
-					if (storedLastName) setLastName(storedLastName);
-					if (storedEmail) setEmail(storedEmail);
-					
-				} catch (error) {
-					console.log('Error retrieving data:', error);
-				} finally {
-					setLoading(false);
-				}
-			};
-			loadUserData();
-		}, []);
+	useEffect(() => {
+		console.log(user);
+        if (user) {
+            setFirstName(user.firstName);
+            setLastName(user.lastName);
+            setEmail(user.email);
+        }
+    }, [user]);
 
 	return (
 		<View style={styles.container}>

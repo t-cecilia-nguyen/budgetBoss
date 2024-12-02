@@ -1,9 +1,12 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert } from 'react-native';
 import { FontAwesome } from 'react-native-vector-icons';
 import { Colors } from '../assets/colors';
+import { UserContext } from '../context/userContext';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function LoginScreen({ navigation }) {
+    const { setUser } = useContext(UserContext);
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
 
@@ -37,6 +40,9 @@ export default function LoginScreen({ navigation }) {
             const data = await response.json();
 
             if (response.ok) {
+                const { user, token } = data;
+                setUser(user); // Update context
+                await AsyncStorage.setItem('token', token); // Store the token
                 Alert.alert('Login Successful');
                 navigation.replace('MainApp'); // Navigate to main screen
             } else {

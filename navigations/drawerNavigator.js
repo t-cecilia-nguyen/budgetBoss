@@ -1,9 +1,10 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { Alert, View, Text, Image, StyleSheet } from 'react-native';
 import { FontAwesome } from 'react-native-vector-icons';
 import { createDrawerNavigator, DrawerItemList } from '@react-navigation/drawer';
 import { Colors } from '../assets/colors';
-import AsyncStorage from '@react-native-async-storage/async-storage'; // Testing purposes only
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { UserContext } from '../context/userContext';
 
 // Import screens
 import MyAccount from '../screens/myAccount';
@@ -18,6 +19,7 @@ function DrawerContent(props) {
 	const [firstName, setFirstName] = useState('');
 	const [lastName, setLastName] = useState('');
 	const [email, setEmail] = useState('');
+	const [loading, setLoading] = useState(true);
 	const profilePicture = require('../assets/profilepic.png');
 
 	useEffect(() => {
@@ -60,10 +62,15 @@ function DrawerContent(props) {
 
 // Placeholder for sign out
 function SignOutComponent({ navigation }) {
+	const { setUser } = useContext(UserContext);
+
 	useEffect(() => {
         const handleSignOut = async () => {
             try {
-                // await AsyncStorage.clear(); // Deletes AsyncStorage data - Use to reset if needed
+				// Remove token and clear data from context
+                await AsyncStorage.removeItem('token');
+				setUser(null);
+
                 Alert.alert('You have been signed out');
 				navigation.replace('Login');
             } catch (error) {
@@ -71,7 +78,7 @@ function SignOutComponent({ navigation }) {
             }
         };
         handleSignOut();
-    }, [navigation]);
+    }, [navigation, setUser]);
 		return null;
 }
 

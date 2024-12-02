@@ -2,6 +2,7 @@ const express = require('express');
 const bcrypt = require('bcrypt');
 const db = require('../database');
 const router = express.Router();
+const jwt = require('jsonwebtoken');
 
 // Signup endpoint
 router.post('/signup', async (req, res) => {
@@ -57,12 +58,52 @@ router.post('/login', (req, res) => {
             }
 
             if (isMatch) {
-                res.status(200).json({ message: 'Login successful', user: { id: row.id, email: row.email } });
+                // Generate token (JWT)
+                const token = jwt.sign({ userId: row.id }, 'jwt_secret', { expiresIn: '1h' }); // Can generate secret key in future use
+
+                // Send user info and token
+                return res.status(200).json({
+                    message: 'Login successful',
+                    user: {
+                        id: row.id,
+                        firstName: row.first_name,
+                        lastName: row.last_name,
+                        email: row.email,
+                    },
+                    token,
+                });
             } else {
-                res.status(401).json({ message: 'Invalid credentials' });
+                return res.status(401).json({ message: 'Invalid credentials' });
             }
         });
     });
 });
+
+// GET user by ID
+router.get('/api/users/:id', async (req, res) => {
+    const userId = req.params.id;
+
+    try {
+        const result = await db.query('SELECT * FROM users WHERE id = ?', [userId]);
+
+        // Check if any user was found
+        if (result.length > 0) {
+            const user = result[0];
+            
+            res.json({
+                id: user.id,
+                firstName: user.first_name,
+                lastName: user.last_name,
+                email: user.email
+            });
+        } else {
+            res.status(404).json({ message: 'User not found' });
+        }
+    } catch (error) {
+        console.error('Error fetching user data:', error);
+        res.status(500).json({ message: 'Server error' });
+    }
+});
+
 
 module.exports = router;
