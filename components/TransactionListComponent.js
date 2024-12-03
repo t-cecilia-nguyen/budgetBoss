@@ -2,6 +2,7 @@ import React, { useEffect, useState, useContext } from 'react';
 import { StyleSheet, View, Text, TouchableOpacity, Alert, ScrollView } from 'react-native';
 import { UserContext } from '../context/userContext';
 import { useTransactions } from '../navigations/bottomTabs';
+import { ScrollView } from 'react-native-gesture-handler';
 
 const combineAndSortTransactions = (incomeTransactions = [], expenseTransactions = []) => {
   const allTransactions = [...incomeTransactions, ...expenseTransactions];
@@ -25,6 +26,8 @@ const TransactionList = () => {
   const [expenseTransactions, setExpenseTransactions] = useState([]);
   const [selectedTransactionId, setSelectedTransactionId] = useState(null); 
   const { transactionsChanged, setTransactionsChanged } = useTransactions();
+
+
 
 
   useEffect(() => {
@@ -88,7 +91,9 @@ const TransactionList = () => {
   };
 
   return (
+
     <ScrollView contentContainerStyle={styles.container}>
+
       <View style={styles.totalsContainer}>
         <Text style={styles.totalText}>Total Income: <Text style={styles.income}>+${totalIncome}</Text></Text>
         <Text style={styles.totalText}>Total Expenses: <Text style={styles.expense}>-${totalExpenses}</Text></Text>
@@ -122,6 +127,7 @@ const TransactionList = () => {
     </ScrollView>
   );
 };
+
 
 const styles = StyleSheet.create({
   container: {

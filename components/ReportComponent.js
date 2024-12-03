@@ -1,50 +1,75 @@
-import React from 'react';
-import { View, Image, StyleSheet, FlatList, TouchableOpacity } from 'react-native';
-import { useTransactions } from '../navigations/bottomTabs';
+import React, { useState } from "react";
+import { View, StyleSheet } from "react-native";
+
+import HorizontalLine from "./reports/HorizontalLine";
+import CustomButtonTab from "./reports/CustomButtonTab";
+import ReportPrevMonthComponent from "./reports/ReportPrevMonthComponent ";
+import ReportThisMonthComponent from "./reports/ReportThisMonthComponent";
+
+const ReportComponent = ({
+  incomeTransactions,
+  expenseTransactions,
+  setExpenseTransactions,
+  setIncomeTransactions,
+  budgetEntries,
+  setBudgetEntries
+}) => {
 
 
-const reportImages = [
-	require('../assets/reports/RunningBudget.png'),
-	require('../assets/reports/TransactionHistory.png'),
-	require('../assets/reports/MonthlyReport.png'),
-];
+  const [selectedButton, setSelectedButton] = useState("This Month");
 
-const ReportComponent = () => {
+  return (
+    <View style={styles.container}>
+      <View style={styles.headerTab}>
+        <View
+          style={{
+            flexDirection: "row",
+            width: "60%",
+            justifyContent: "space-around",
+          }}
+        >
+          <CustomButtonTab
+            title="Prev Month"
+            selectedButton={selectedButton}
+            setSelectedButton={setSelectedButton}
+          />
+          <CustomButtonTab
+            title="This Month"
+            selectedButton={selectedButton}
+            setSelectedButton={setSelectedButton}
+          />
+        </View>
+        <HorizontalLine />
+      </View>
 
-	return (
-		<View style={styles.container}>
-			<FlatList
-			data={reportImages}
-			keyExtractor={(item, index) => index.toString()} 
-			renderItem={({ item }) => (
-				<View style={styles.card}>
-				<Image source={item} style={styles.image} />
-				</View>
-			)}
-			contentContainerStyle={styles.scrollContainer}
-			/>
-		</View>
-	);
+      {selectedButton === "Prev Month" && 
+        <ReportPrevMonthComponent 
+          incomeTransactions={incomeTransactions}
+          expenseTransactions={expenseTransactions}
+          budgetEntries={budgetEntries}
+        />}
+      {selectedButton === "This Month" &&
+       <ReportThisMonthComponent 
+          incomeTransactions={incomeTransactions}
+          expenseTransactions={expenseTransactions}
+          setExpenseTransactions={setExpenseTransactions}
+          setIncomeTransactions={setIncomeTransactions}
+          budgetEntries={budgetEntries}
+          setBudgetEntries={setBudgetEntries}
+       />}
+    </View>
+  );
 };
 
 export default ReportComponent;
 
 const styles = StyleSheet.create({
-	container: {
-		flex: 1,
-		backgroundColor: "#fff",
-		alignItems: "center",
-		justifyContent: "center",
-	},
-	card: {
-		alignItems: 'center', 
-		paddingTop: 10
-	},
-	image: {
-		width: 395, 
-		height: 265, 
-	},
-	scrollContainer: {
-		alignItems: 'center', 
-	}
+  container: {
+    flex: 1,
+    backgroundColor: "#fff",
+  },
+  headerTab: {
+    marginTop: 10,
+    marginBottom: 10,
+  },
 });
