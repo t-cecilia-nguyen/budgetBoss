@@ -10,7 +10,6 @@ export default function ContactScreen() {
         <View style={styles.container}>
             <Text style={styles.title}>CONTACT US</Text>
 
-            {/* Members Section */}
             <View style={styles.section}>
                 <Text style={styles.sectionTitle}>Members</Text>
                 {members.map((member, index) => (
@@ -21,23 +20,19 @@ export default function ContactScreen() {
                 ))}
             </View>
 
-            {/* Contact Information Section */}
             <View style={styles.section}>
                 <Text style={styles.sectionTitle}>Contact Information</Text>
-                
-                {/* Phone */}
+
                 <View style={styles.itemRow}>
                     <FontAwesome name="phone" size={24} color={Colors.primaryBlue} />
                     <Text style={styles.text}>Phone: (416) 415 - 2000</Text>
                 </View>
 
-                {/* Email */}
                 <View style={styles.itemRow}>
                     <FontAwesome name="envelope" size={24} color={Colors.primaryBlue} />
                     <Text style={styles.text}>Email: info@budgetboss.ca</Text>
                 </View>
 
-                {/* Address */}
                 <View style={[styles.itemRow, {marginLeft: 5}]}>
                     <FontAwesome name="map-pin" size={24} color={Colors.primaryBlue} />
                     <Text style={[styles.text, {marginLeft: 15}]}>Address: 160 Kendal Ave, Toronto, ON, M5R 1M3</Text>

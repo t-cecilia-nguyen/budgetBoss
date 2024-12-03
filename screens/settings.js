@@ -30,12 +30,8 @@ export default function Settings() {
 				value={isEnabled}
 			/>
 			</View>
-			<TouchableOpacity style={styles.textContainer} onPress={() => { /* Handle Send feedback action here */ }}>
-			<Text style={styles.text}>Delete Account</Text>
-			</TouchableOpacity>
 		</View>
-
-		{/* Settings Options */}
+		
 		<View style={styles.sectionContainer}>
 			<Text style={[styles.titleText, {marginTop: 20}]}>FEEDBACK</Text>
 

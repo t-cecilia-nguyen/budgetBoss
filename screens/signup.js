@@ -11,6 +11,8 @@ export default function SignUpScreen({ navigation }) {
     const [confirmPassword, setConfirmPassword] = useState('');
 
     const handleSignUp = async () => {
+        const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]+$/;
+
         if (!firstName || !lastName || !email || !password || !confirmPassword) {
             Alert.alert('Signup Failed', 'All fields are required');
             return;
@@ -18,6 +20,11 @@ export default function SignUpScreen({ navigation }) {
         
         if (password !== confirmPassword) {
             Alert.alert('Signup Failed', 'Passwords do not match');
+            return;
+        }
+
+        if (!emailRegex.test(email)) {
+            Alert.alert('Signup Failed', 'Please enter a valid email address');
             return;
         }
         
@@ -31,7 +38,7 @@ export default function SignUpScreen({ navigation }) {
             const result = await response.json();
             
             if (response.ok) {
-                Alert.alert('Signup Successful', result.message);
+                Alert.alert('Signup Successful. Please login.', result.message);
                 navigation.navigate('Login'); // Navigate to login screen
             } else {
                 Alert.alert('Signup Failed', result.message);
