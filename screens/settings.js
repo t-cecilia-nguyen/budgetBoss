@@ -12,6 +12,10 @@ export default function Settings() {
 		navigation.navigate('Contact'); // Navigate to contact screen
 	};
 
+	const navigateToHelp = () => {
+		navigation.navigate('Help'); // Navigate to help screen
+	}
+
 	return (
 		<View style={styles.container}>
 		<Text style={styles.title}>Settings</Text>
@@ -33,14 +37,14 @@ export default function Settings() {
 
 		{/* Settings Options */}
 		<View style={styles.sectionContainer}>
-			<Text style={styles.titleText}>FEEDBACK</Text>
+			<Text style={[styles.titleText, {marginTop: 20}]}>FEEDBACK</Text>
 
-			<TouchableOpacity style={styles.textContainer} onPress={() => { /* Handle Send feedback action here */ }}>
-			<Text style={styles.text}>Report a bug</Text>
+			<TouchableOpacity style={styles.textContainer} onPress={navigateToHelp}>
+			<Text style={styles.text}>Help and Support</Text>
 			</TouchableOpacity>
 
 			<TouchableOpacity style={styles.textContainer} onPress={navigateToContact}>
-			<Text style={styles.text}>Contact</Text>
+			<Text style={styles.text}>Contact Us</Text>
 			</TouchableOpacity>
 		</View>
 		</View>
