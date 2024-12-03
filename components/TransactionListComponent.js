@@ -27,6 +27,8 @@ const TransactionList = () => {
   const { transactionsChanged, setTransactionsChanged } = useTransactions();
 
 
+
+
   useEffect(() => {
     console.log("transactionsChanged on translist:", transactionsChanged);
     const fetchTransactions = async () => {
@@ -88,7 +90,9 @@ const TransactionList = () => {
   };
 
   return (
+
     <ScrollView contentContainerStyle={styles.container}>
+
       <View style={styles.totalsContainer}>
         <Text style={styles.totalText}>Total Income: <Text style={styles.income}>+${totalIncome}</Text></Text>
         <Text style={styles.totalText}>Total Expenses: <Text style={styles.expense}>-${totalExpenses}</Text></Text>
@@ -122,6 +126,7 @@ const TransactionList = () => {
     </ScrollView>
   );
 };
+
 
 const styles = StyleSheet.create({
   container: {
