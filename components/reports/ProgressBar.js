@@ -2,9 +2,9 @@ import { View, Text, StyleSheet } from "react-native";
 import React, { useState, useEffect } from "react";
 import * as Progress from "react-native-progress";
 
-import {Colors} from "../../assets/colors";
+import { Colors } from "../../assets/colors";
 
-const ProgressBar = ({newValue}) => {
+const ProgressBar = ({ newValue }) => {
   const [value, setValue] = useState(0);
 
   // Update the progress value whenever `newValue` changes
@@ -17,14 +17,17 @@ const ProgressBar = ({newValue}) => {
     });
   }, [newValue]);
 
+  const progressBarColor = newValue >= 0.95 ? Colors.red : Colors.green;
+
   return (
     <View style={styles.container}>
-      <Progress.Bar 
-        progress={value} 
-        width={300} 
-        color={Colors.green}  
-        unfilledColor={Colors.lightGrey}  
-        borderWidth={0}   />
+      <Progress.Bar
+        progress={value}
+        width={300}
+        color={progressBarColor}
+        unfilledColor={Colors.lightGrey}
+        borderWidth={0}
+      />
     </View>
   );
 };

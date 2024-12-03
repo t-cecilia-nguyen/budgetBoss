@@ -62,7 +62,7 @@ console.log("Filtered Expense Data:", expenseData); // Debugging the result
         <LineChart
           data={expenseData}
           noOfSections={3}
-          spacing={100}
+          spacing={70}
           curved={true}
           color="red"
           yAxisColor={"grey"}

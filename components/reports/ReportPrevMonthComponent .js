@@ -1,11 +1,5 @@
 import React, { useState, useContext } from "react";
-import {
-  View,
-  Text,
-  StyleSheet,
-  Dimensions,
-  ScrollView,
-} from "react-native";
+import { View, Text, StyleSheet, Dimensions, ScrollView } from "react-native";
 import { FontAwesome } from "react-native-vector-icons";
 
 import { Colors } from "../../assets/colors";
@@ -19,25 +13,23 @@ const ReportPrevMonthComponent = ({
   expenseTransactions,
   budgetEntries,
 }) => {
-
   // Get the current month and year
   const today = new Date();
-  const prevMonth = today.getUTCMonth() -1;
+  const prevMonth = today.getUTCMonth() - 1;
   const currentYear = today.getUTCFullYear();
- 
-// Log the current month, previous month, and current year
-console.log("Current Month (UTC):", today.getUTCMonth());
-console.log("Previous Month (UTC):", prevMonth);
-console.log("Current Year:", currentYear);
+
+  // Log the current month, previous month, and current year
+  console.log("Current Month (UTC):", today.getUTCMonth());
+  console.log("Previous Month (UTC):", prevMonth);
+  console.log("Current Year:", currentYear);
 
   const isValidDate = (date) => !isNaN(new Date(date).getTime());
 
-  
   const filterByPrevMonth = (transactions) =>
     transactions.filter((txn) => {
-      const date = new Date(txn.date); 
-      const parsedMonth = date.getUTCMonth(); 
-      const parsedYear = date.getUTCFullYear(); 
+      const date = new Date(txn.date);
+      const parsedMonth = date.getUTCMonth();
+      const parsedYear = date.getUTCFullYear();
 
       return (
         isValidDate(txn.date) &&
@@ -46,47 +38,49 @@ console.log("Current Year:", currentYear);
       );
     });
 
-    const filterBudgetEntriesByPrevMonth = (entries) =>
-      entries.filter((entry) => {
-        const startDay = new Date(entry.StartDate);
-        const endDay = new Date(entry.EndDate);
-        return (
-          isValidDate(entry.StartDate) &&
-          isValidDate(entry.EndDate) &&
-          ((endDay.getUTCMonth() === prevMonth && endDay.getUTCFullYear() === currentYear) ||
-            (startDay.getUTCMonth() === prevMonth && startDay.getUTCFullYear() === currentYear))
-        );
-      });
-
+  const filterBudgetEntriesByPrevMonth = (entries) =>
+    entries.filter((entry) => {
+      const startDay = new Date(entry.StartDate);
+      const endDay = new Date(entry.EndDate);
+      return (
+        isValidDate(entry.StartDate) &&
+        isValidDate(entry.EndDate) &&
+        ((endDay.getUTCMonth() === prevMonth &&
+          endDay.getUTCFullYear() === currentYear) ||
+          (startDay.getUTCMonth() === prevMonth &&
+            startDay.getUTCFullYear() === currentYear))
+      );
+    });
 
   const filteredExpenseTransactions = filterByPrevMonth(expenseTransactions);
   const filteredBudgetEntries = filterBudgetEntriesByPrevMonth(budgetEntries);
   const filteredIncomeTransactions = filterByPrevMonth(incomeTransactions);
 
-  console.log("FILTERED")
-  console.log(filteredExpenseTransactions, filteredIncomeTransactions,filteredBudgetEntries );
+  console.log("FILTERED");
+  console.log(
+    filteredExpenseTransactions,
+    filteredIncomeTransactions,
+    filteredBudgetEntries
+  );
 
- // Calculate totals directly for the current month
-const totalIncome = filteredIncomeTransactions.reduce(
-  (sum, txn) => sum + txn.amount,
-  0
-);
-const totalExpense = filteredExpenseTransactions.reduce(
-  (sum, txn) => sum + txn.amount,
-  0
-);
-const totalBudget = filteredBudgetEntries.reduce(
-  (sum, txn) => sum + txn.Amount,
-  0
-);
-
+  // Calculate totals directly for the current month
+  const totalIncome = filteredIncomeTransactions.reduce(
+    (sum, txn) => sum + txn.amount,
+    0
+  );
+  const totalExpense = filteredExpenseTransactions.reduce(
+    (sum, txn) => sum + txn.amount,
+    0
+  );
+  const totalBudget = filteredBudgetEntries.reduce(
+    (sum, txn) => sum + txn.Amount,
+    0
+  );
 
   const netAmount = totalBudget - totalExpense;
   const expensePercentage = totalBudget > 0 ? totalExpense / totalBudget : 0;
 
-  console.log("netAmount:", netAmount  , "expensePercentage", expensePercentage);//debug
-  
-  
+  console.log("netAmount:", netAmount, "expensePercentage", expensePercentage); //debug
 
   return (
     <View style={styles.container}>
@@ -106,9 +100,16 @@ const totalBudget = filteredBudgetEntries.reduce(
           <View style={styles.spacer}></View>
           <ProgressBar newValue={expensePercentage} />
           <View style={styles.amountYouCanSpend}>
-            <Text style={styles.textBold}>Amount you can spend</Text>
-            <Text style={[{ color: Colors.green }, styles.textBold]}>
-              ${netAmount}
+            <Text style={styles.textBold}>
+              {netAmount <= 0 ? "Over Budget" : "Amount you can spend"}
+            </Text>
+            <Text
+              style={[
+                styles.textBold,
+                { color: netAmount <= 0 ? Colors.red : Colors.green },
+              ]}
+            >
+              {netAmount}
             </Text>
           </View>
           <View style={styles.horizontalBox}>
@@ -120,7 +121,7 @@ const totalBudget = filteredBudgetEntries.reduce(
             </View>
             <View style={styles.totalSpent}>
               <Text style={styles.textBold}>Total Spent</Text>
-              <Text style={[{ color: Colors.green }, styles.textBold]}>
+              <Text style={[{ color: Colors.red }, styles.textBold]}>
                 ${totalExpense}
               </Text>
             </View>
@@ -133,10 +134,9 @@ const totalBudget = filteredBudgetEntries.reduce(
           </View>
         </View>
 
-        
         {/*Report This Month*/}
         <View style={styles.card}>
-          <Text style={styles.cardText}>Report Previous Month</Text>
+          <Text style={styles.cardText}>Expense Previous Month</Text>
 
           <SummaryChart
             incomeTransactions={filteredIncomeTransactions}

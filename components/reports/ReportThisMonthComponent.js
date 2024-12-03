@@ -106,9 +106,16 @@ const totalBudget = filteredBudgetEntries.reduce(
           <View style={styles.spacer}></View>
           <ProgressBar newValue={expensePercentage} />
           <View style={styles.amountYouCanSpend}>
-            <Text style={styles.textBold}>Amount you can spend</Text>
-            <Text style={[{ color: Colors.green }, styles.textBold]}>
-              ${netAmount}
+          <Text style={styles.textBold}>
+              {netAmount <= 0 ? "Over Budget" : "Amount you can spend"}
+            </Text>
+            <Text
+              style={[
+                styles.textBold,
+                { color: netAmount <= 0 ? Colors.red : Colors.green },
+              ]}
+            >
+              {netAmount}
             </Text>
           </View>
           <View style={styles.horizontalBox}>
@@ -120,7 +127,7 @@ const totalBudget = filteredBudgetEntries.reduce(
             </View>
             <View style={styles.totalSpent}>
               <Text style={styles.textBold}>Total Spent</Text>
-              <Text style={[{ color: Colors.green }, styles.textBold]}>
+              <Text style={[{ color: Colors.red }, styles.textBold]}>
                 ${totalExpense}
               </Text>
             </View>
@@ -136,7 +143,7 @@ const totalBudget = filteredBudgetEntries.reduce(
         
         {/*Report This Month*/}
         <View style={styles.card}>
-          <Text style={styles.cardText}>Report This Month</Text>
+          <Text style={styles.cardText}>Expense This Month</Text>
 
           <SummaryChart
             incomeTransactions={filteredIncomeTransactions}
