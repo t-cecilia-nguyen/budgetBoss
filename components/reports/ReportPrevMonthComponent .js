@@ -5,7 +5,6 @@ import {
   StyleSheet,
   Dimensions,
   ScrollView,
-  FlatList,
 } from "react-native";
 import { FontAwesome } from "react-native-vector-icons";
 
@@ -23,19 +22,27 @@ const ReportPrevMonthComponent = ({
 
   // Get the current month and year
   const today = new Date();
-  const prevMonth = today.getMonth() -1;
-  const currentYear = today.getFullYear();
+  const prevMonth = today.getUTCMonth() -1;
+  const currentYear = today.getUTCFullYear();
+ 
+// Log the current month, previous month, and current year
+console.log("Current Month (UTC):", today.getUTCMonth());
+console.log("Previous Month (UTC):", prevMonth);
+console.log("Current Year:", currentYear);
 
   const isValidDate = (date) => !isNaN(new Date(date).getTime());
 
+  
   const filterByPrevMonth = (transactions) =>
     transactions.filter((txn) => {
-      const date = new Date(txn.Date); 
-      console.log("Parsed Date:", date); // Debug
+      const date = new Date(txn.date); 
+      const parsedMonth = date.getUTCMonth(); 
+      const parsedYear = date.getUTCFullYear(); 
+
       return (
-        isValidDate(txn.Date) &&
-        date.getMonth() === prevMonth &&
-        date.getFullYear() === currentYear
+        isValidDate(txn.date) &&
+        parsedMonth === prevMonth &&
+        parsedYear === currentYear
       );
     });
 
@@ -46,8 +53,8 @@ const ReportPrevMonthComponent = ({
         return (
           isValidDate(entry.StartDate) &&
           isValidDate(entry.EndDate) &&
-          ((endDay.getMonth() === prevMonth && endDay.getFullYear() === currentYear) ||
-            (startDay.getMonth() === prevMonth && startDay.getFullYear() === currentYear))
+          ((endDay.getUTCMonth() === prevMonth && endDay.getUTCFullYear() === currentYear) ||
+            (startDay.getUTCMonth() === prevMonth && startDay.getUTCFullYear() === currentYear))
         );
       });
 
@@ -57,25 +64,30 @@ const ReportPrevMonthComponent = ({
   const filteredIncomeTransactions = filterByPrevMonth(incomeTransactions);
 
   console.log("FILTERED")
-  console.log(filteredExpenseTransactions, filteredBudgetEntries, filteredIncomeTransactions);
+  console.log(filteredExpenseTransactions, filteredIncomeTransactions,filteredBudgetEntries );
 
  // Calculate totals directly for the current month
 const totalIncome = filteredIncomeTransactions.reduce(
-  (sum, txn) => sum + txn.Amount,
+  (sum, txn) => sum + txn.amount,
   0
 );
 const totalExpense = filteredExpenseTransactions.reduce(
-  (sum, txn) => sum + txn.Amount,
+  (sum, txn) => sum + txn.amount,
   0
 );
 const totalBudget = filteredBudgetEntries.reduce(
   (sum, txn) => sum + txn.Amount,
   0
 );
+
+
   const netAmount = totalBudget - totalExpense;
   const expensePercentage = totalBudget > 0 ? totalExpense / totalBudget : 0;
 
- 
+  console.log("netAmount:", netAmount  , "expensePercentage", expensePercentage);//debug
+  
+  
+
   return (
     <View style={styles.container}>
       <ScrollView nestedScrollEnabled>
@@ -121,14 +133,14 @@ const totalBudget = filteredBudgetEntries.reduce(
           </View>
         </View>
 
-
-        {/*Report Prev Month*/}
+        
+        {/*Report This Month*/}
         <View style={styles.card}>
           <Text style={styles.cardText}>Report Previous Month</Text>
 
           <SummaryChart
-            incomeTransactions={incomeTransactions}
-            expenseTransactions={expenseTransactions}
+            incomeTransactions={filteredIncomeTransactions}
+            expenseTransactions={filteredExpenseTransactions}
             totalIncome={totalIncome}
             totalExpense={totalExpense}
           />

@@ -2,7 +2,6 @@ import React, { useEffect, useState, useContext } from 'react';
 import { StyleSheet, View, Text, TouchableOpacity, Alert, ScrollView } from 'react-native';
 import { UserContext } from '../context/userContext';
 import { useTransactions } from '../navigations/bottomTabs';
-import { ScrollView } from 'react-native-gesture-handler';
 
 const combineAndSortTransactions = (incomeTransactions = [], expenseTransactions = []) => {
   const allTransactions = [...incomeTransactions, ...expenseTransactions];

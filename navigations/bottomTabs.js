@@ -1,7 +1,6 @@
 import { FontAwesome } from 'react-native-vector-icons';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Colors } from '../assets/colors';
-import { initialIncome, initialExpenses } from '../data/transactions';
 import { initialBudgets } from '../data/budget';
 
 import { useState, createContext, useContext } from 'react';
@@ -21,8 +20,8 @@ export const useTransactions = () => {
 };
 
 export const TransactionsProvider = ({ children }) => {
-	const [incomeTransactions, setIncomeTransactions] = useState(initialIncome);
-	const [expenseTransactions, setExpenseTransactions] = useState(initialExpenses);
+	const [incomeTransactions, setIncomeTransactions] = useState([]);
+	const [expenseTransactions, setExpenseTransactions] = useState([]);
   const [transactionsChanged, setTransactionsChanged] = useState(false); 
 
 	return (

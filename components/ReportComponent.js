@@ -5,15 +5,52 @@ import HorizontalLine from "./reports/HorizontalLine";
 import CustomButtonTab from "./reports/CustomButtonTab";
 import ReportPrevMonthComponent from "./reports/ReportPrevMonthComponent ";
 import ReportThisMonthComponent from "./reports/ReportThisMonthComponent";
+import { UserContext } from "../context/userContext";
+import { useContext, useEffect } from "react";
+import { useTransactions } from "../navigations/bottomTabs";
 
 const ReportComponent = ({
-  incomeTransactions,
-  expenseTransactions,
-  setExpenseTransactions,
-  setIncomeTransactions,
   budgetEntries,
   setBudgetEntries
 }) => {
+
+  const { user } = useContext(UserContext); // Access user context
+  const [incomeTransactions, setIncomeTransactions] = useState([]);
+  const [expenseTransactions, setExpenseTransactions] = useState([]);
+  const { transactionsChanged, setTransactionsChanged } = useTransactions();
+
+
+
+
+  useEffect(() => {
+    const fetchTransactions = async () => {
+      if (!user) {
+        console.log('No user logged in.');
+        return;
+      }
+
+      try {
+        const response = await fetch(`http://10.0.2.2:3000/api/transactions/${user.id}`);
+        if (!response.ok) {
+          throw new Error('Failed to fetch transactions');
+        }
+
+        const transactions = await response.json();
+        console.log('Fetched Transactions:', transactions);
+
+
+        const income = transactions.filter((t) => t.type === 'Income');
+        const expenses = transactions.filter((t) => t.type === 'Expense');
+
+        setIncomeTransactions(income);
+        setExpenseTransactions(expenses);
+      } catch (error) {
+        console.error('Error fetching transactions:', error);
+      }
+    };
+
+    fetchTransactions();
+  }, [user, transactionsChanged]);
 
 
   const [selectedButton, setSelectedButton] = useState("This Month");
@@ -52,10 +89,7 @@ const ReportComponent = ({
        <ReportThisMonthComponent 
           incomeTransactions={incomeTransactions}
           expenseTransactions={expenseTransactions}
-          setExpenseTransactions={setExpenseTransactions}
-          setIncomeTransactions={setIncomeTransactions}
           budgetEntries={budgetEntries}
-          setBudgetEntries={setBudgetEntries}
        />}
     </View>
   );

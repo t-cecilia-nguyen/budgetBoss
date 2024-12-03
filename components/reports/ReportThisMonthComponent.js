@@ -5,7 +5,6 @@ import {
   StyleSheet,
   Dimensions,
   ScrollView,
-  FlatList,
 } from "react-native";
 import { FontAwesome } from "react-native-vector-icons";
 
@@ -25,18 +24,21 @@ const ReportThisMonthComponent = ({
   const today = new Date();
   const currentMonth = today.getMonth();
   const currentYear = today.getFullYear();
+ 
 
   const isValidDate = (date) => !isNaN(new Date(date).getTime());
 
   
   const filterByCurrentMonth = (transactions) =>
     transactions.filter((txn) => {
-      const date = new Date(txn.Date); // Ensure txn.Date is converted to a Date object
-      console.log("Parsed Date:", date); // Debug
+      const date = new Date(txn.date); 
+      const parsedMonth = date.getUTCMonth(); 
+      const parsedYear = date.getUTCFullYear(); 
+
       return (
-        isValidDate(txn.Date) &&
-        date.getMonth() === currentMonth &&
-        date.getFullYear() === currentYear
+        isValidDate(txn.date) &&
+        parsedMonth === currentMonth &&
+        parsedYear === currentYear
       );
     });
 
@@ -58,24 +60,29 @@ const ReportThisMonthComponent = ({
   const filteredIncomeTransactions = filterByCurrentMonth(incomeTransactions);
 
   console.log("FILTERED")
-  console.log(filteredExpenseTransactions, filteredBudgetEntries, filteredIncomeTransactions);
+  console.log(filteredExpenseTransactions, filteredIncomeTransactions,filteredBudgetEntries );
 
  // Calculate totals directly for the current month
 const totalIncome = filteredIncomeTransactions.reduce(
-  (sum, txn) => sum + txn.Amount,
+  (sum, txn) => sum + txn.amount,
   0
 );
 const totalExpense = filteredExpenseTransactions.reduce(
-  (sum, txn) => sum + txn.Amount,
+  (sum, txn) => sum + txn.amount,
   0
 );
 const totalBudget = filteredBudgetEntries.reduce(
   (sum, txn) => sum + txn.Amount,
   0
 );
+
+
   const netAmount = totalBudget - totalExpense;
   const expensePercentage = totalBudget > 0 ? totalExpense / totalBudget : 0;
 
+  console.log("netAmount:", netAmount  , "expensePercentage", expensePercentage);//debug
+  
+  
   // Days left in the current month
   const lastDayOfMonth = new Date(currentYear, currentMonth + 1, 0);
   const diffTime = lastDayOfMonth - today;
@@ -132,8 +139,8 @@ const totalBudget = filteredBudgetEntries.reduce(
           <Text style={styles.cardText}>Report This Month</Text>
 
           <SummaryChart
-            incomeTransactions={incomeTransactions}
-            expenseTransactions={expenseTransactions}
+            incomeTransactions={filteredIncomeTransactions}
+            expenseTransactions={filteredExpenseTransactions}
             totalIncome={totalIncome}
             totalExpense={totalExpense}
           />
