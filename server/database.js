@@ -20,4 +20,17 @@ db.run(`
     )
 `);
 
+// makes the transaction table
+db.run(`
+    CREATE TABLE IF NOT EXISTS transactions (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        user_id INTEGER NOT NULL,
+        amount REAL NOT NULL,
+        type TEXT CHECK(type IN ('Income', 'Expense')) NOT NULL,
+        category TEXT NOT NULL,
+        date TEXT NOT NULL,
+        FOREIGN KEY (user_id) REFERENCES users (id)
+    )
+`);
+
 module.exports = db;

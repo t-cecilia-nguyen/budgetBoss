@@ -22,6 +22,7 @@ export const useTransactions = () => {
 export const TransactionsProvider = ({ children }) => {
 	const [incomeTransactions, setIncomeTransactions] = useState(initialIncome);
 	const [expenseTransactions, setExpenseTransactions] = useState(initialExpenses);
+  const [transactionsChanged, setTransactionsChanged] = useState(false); 
 
 	return (
 		<TransactionsContext.Provider
@@ -30,6 +31,8 @@ export const TransactionsProvider = ({ children }) => {
 				setIncomeTransactions,
 				expenseTransactions,
 				setExpenseTransactions,
+        transactionsChanged,
+        setTransactionsChanged,
 			}}
 			>
 			{children}

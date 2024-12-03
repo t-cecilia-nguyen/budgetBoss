@@ -22,6 +22,7 @@ export default function SignUpScreen({ navigation }) {
         }
         
         try {
+            console.log('trying to sign up')
             const response = await fetch('http://10.0.2.2:3000/api/users/signup', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
