@@ -18,7 +18,6 @@ export const useTransactions = () => {
 	return useContext(TransactionsContext);
 };
 
-
 export const TransactionsProvider = ({ children }) => {
 	const [incomeTransactions, setIncomeTransactions] = useState(initialIncome);
 	const [expenseTransactions, setExpenseTransactions] = useState(initialExpenses);
@@ -39,7 +38,6 @@ export const TransactionsProvider = ({ children }) => {
 		</TransactionsContext.Provider>
 	);
 };
-
 
 export default function BottomTabs() {
 	return (

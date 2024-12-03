@@ -43,7 +43,6 @@ export default function LoginScreen({ navigation }) {
                 const { user, token } = data;
                 setUser(user); // Update context
                 await AsyncStorage.setItem('token', token); // Store the token
-                Alert.alert('Login Successful');
                 navigation.replace('MainApp'); // Navigate to main screen
             } else {
                 Alert.alert(data.message || 'Invalid credentials');

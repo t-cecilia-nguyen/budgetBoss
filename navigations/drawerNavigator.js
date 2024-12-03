@@ -5,10 +5,10 @@ import { createDrawerNavigator, DrawerItemList } from '@react-navigation/drawer'
 import { Colors } from '../assets/colors';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { UserContext } from '../context/userContext';
+import { SettingsStackNavigator } from './settingsNavigator';
 
 // Import screens
 import MyAccount from '../screens/myAccount';
-import Settings from '../screens/settings';
 
 // Import bottom tabs
 import BottomTabs from './bottomTabs';
@@ -16,32 +16,20 @@ import BottomTabs from './bottomTabs';
 const Drawer = createDrawerNavigator();
 
 function DrawerContent(props) {
+	const { user } = useContext(UserContext);
 	const [firstName, setFirstName] = useState('');
 	const [lastName, setLastName] = useState('');
 	const [email, setEmail] = useState('');
-	const [loading, setLoading] = useState(true);
 	const profilePicture = require('../assets/profilepic.png');
 
 	useEffect(() => {
-		const loadUserData = async () => {
-			try {
-				const storedFirstName = await AsyncStorage.getItem('userFirstName');
-				const storedLastName = await AsyncStorage.getItem('userLastName');
-				const storedEmail = await AsyncStorage.getItem('userEmail');
-
-				if (storedFirstName) setFirstName(storedFirstName);
-				if (storedLastName) setLastName(storedLastName);
-				if (storedEmail) setEmail(storedEmail);
-				
-			} catch (error) {
-				console.log('Error retrieving data:', error);
-			} finally {
-				setLoading(false);
-			}
-		};
-
-		loadUserData();
-	}, []);
+		console.log(user);
+        if (user) {
+            setFirstName(user.firstName);
+            setLastName(user.lastName);
+            setEmail(user.email);
+        }
+    }, [user]);
 
 	return (
 		<View style={styles.drawerContainer}>
@@ -134,7 +122,7 @@ export default function DrawerNavigator() {
 		/>
 		<Drawer.Screen
 			name="Settings"
-			component={Settings}
+			component={SettingsStackNavigator}
 			options={({ navigation }) => ({
 			drawerIcon: ({ color, size }) => (
 				<FontAwesome name="cog" color={color} size={size} />
