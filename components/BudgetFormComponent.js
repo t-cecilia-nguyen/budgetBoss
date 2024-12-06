@@ -1,6 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { StyleSheet, View, Text, TextInput, TouchableOpacity, Alert } from 'react-native';
-import { useContext } from 'react';
 import { UserContext } from '../context/userContext';
 
 const BudgetFormTab = () => {
