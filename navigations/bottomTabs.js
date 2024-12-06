@@ -8,8 +8,9 @@ import { useState, createContext, useContext } from 'react';
 // Import tabs
 import TransactionsTab from '../tabs/transactions';
 import ReportsTab from '../tabs/reports';
-import BudgetsTab from '../tabs/budgets';
 import ExpensesTab from '../tabs/expenses';
+
+import { BudgetStackNavigator } from './budgetNavigator';
 
 const Tab = createBottomTabNavigator();
 
@@ -39,8 +40,6 @@ export const TransactionsProvider = ({ children }) => {
 		</TransactionsContext.Provider>
 	);
 };
-
-
 
 // BudgetContext
 export const BudgetContext = createContext();
@@ -94,7 +93,7 @@ export default function BottomTabs() {
           />
           <Tab.Screen
             name="Budgets"
-            component={BudgetsTab}
+            component={BudgetStackNavigator}
             options={{
               tabBarIcon: ({ color, size }) => (
                 <FontAwesome name="calculator" color={color} size={size} />

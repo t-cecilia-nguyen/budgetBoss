@@ -4,6 +4,7 @@ import { Picker } from '@react-native-picker/picker';
 import { useTransactions } from '../navigations/bottomTabs';
 import { useContext } from 'react';
 import { UserContext } from '../context/userContext';
+import { Colors } from '../assets/colors';
 
 const FormTab = () => {
     const [date, setDate] = useState('');
@@ -21,37 +22,35 @@ const FormTab = () => {
     }, [incomeTransactions, expenseTransactions]);
 
     const handleSubmission = async () => {
-      if (!user) {
-        Alert.alert('Error', 'User not logged in');
-        return;
-      }
+        if (!user) {
+            Alert.alert('Error', 'User not logged in');
+            return;
+        }
     
-      const newTransaction = {
+        const newTransaction = {
         userId: user.id,
         date,
         amount: parseFloat(amount),
         category,
         type: formType === 'Income' ? 'Income' : 'Expense',
-      };
+        };
     
-      try {
-        const response = await fetch('http://10.0.2.2:3000/api/transactions', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(newTransaction),
-        });
+        try {
+            const response = await fetch('http://10.0.2.2:3000/api/transactions', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(newTransaction),
+            });
     
         if (!response.ok) {
-          throw new Error('Failed to save transaction');
+            throw new Error('Failed to save transaction');
         }
     
         const result = await response.json();
         console.log('Transaction saved successfully:', result);
-    
 
         setTransactionsChanged((prev) => !prev);  // signal transaction list to refresh
         console.log('Transactions Changed:', transactionsChanged);
-    
 
         setDate('');
         setAmount('');
@@ -59,17 +58,21 @@ const FormTab = () => {
         setNotes('');
     
         Alert.alert('Success', 'Transaction saved successfully');
-      } catch (error) {
+        } catch (error) {
         console.error('Error saving transaction:', error);
         Alert.alert('Error', 'Failed to save transaction');
-      }
+        }
     };
     
+        // Conditional styles based on form type
+        const buttonStyle = formType === "Income" ? styles.incomeButton : styles.expenseButton;
+        const titleStyle = formType === "Income" ? styles.incomeTitle : styles.expenseTitle;
+        const inputStyle = formType === "Income" ? styles.incomeInput : styles.expenseInput;
 
     return (
         <View>
             <View style={styles.form}>
-                <Text style={styles.title}>{formType} Form</Text>
+                <Text style={[styles.title, titleStyle]}>{formType} Form</Text>
                 {/* Picker to select between income and expenses forms */}
                 <Picker selectedValue={formType} style={styles.picker} onValueChange={(itemValue) => setFormType(itemValue)}>
                     <Picker.Item label="Income" value="Income" />
@@ -78,7 +81,7 @@ const FormTab = () => {
 
                 {/* Text Input for Date */}
                 <TextInput
-                    style={styles.input}
+                    style={[styles.input, inputStyle]}
                     placeholder="Date (yyyy-mm-dd)"
                     value={date}
                     onChangeText={setDate}
@@ -86,7 +89,7 @@ const FormTab = () => {
 
                 {/* Text Input for Amount */}
                 <TextInput
-                    style={styles.input}
+                    style={[styles.input, inputStyle]}
                     placeholder="Amount"
                     keyboardType="numeric"
                     value={amount}
@@ -95,7 +98,7 @@ const FormTab = () => {
 
                 {/* Text Input for Category */}
                 <TextInput
-                    style={styles.input}
+                    style={[styles.input, inputStyle]}
                     placeholder="Category"
                     value={category}
                     onChangeText={setCategory}
@@ -103,14 +106,14 @@ const FormTab = () => {
 
                 {/* Text Input for Notes */}
                 <TextInput
-                    style={styles.input}
+                    style={[styles.input, inputStyle]}
                     placeholder="Notes"
                     value={notes}
                     onChangeText={setNotes}
                 />
 
                 {/* Button to submit form */}
-                <TouchableOpacity style={styles.button} onPress={handleSubmission}>
+                <TouchableOpacity style={[styles.button, buttonStyle]} onPress={handleSubmission}>
                     <Text style={styles.buttonText}>Save</Text>
                 </TouchableOpacity>
             </View>
@@ -141,8 +144,13 @@ const styles = StyleSheet.create({
     title: {
         fontSize: 24,
         fontWeight: 'bold',
-        marginBottom: 20,
         textAlign: 'center',
+    },
+    incomeTitle: {
+        color: Colors.green,
+    },
+    expenseTitle: {
+        color: Colors.red,
     },
     input: {
         height: 50,
@@ -152,18 +160,25 @@ const styles = StyleSheet.create({
         marginBottom: 15,
         paddingLeft: 10,
     },
+    incomeInput: {
+        borderColor: Colors.green,
+    },
+    expenseInput: {
+        borderColor: Colors.red,
+    },
     picker: {
-        height: 50,
-        marginBottom: 15,
-        borderWidth: 1,
-        borderRadius: 10,
-        borderColor: '#007AFF',
+        height: 80,
     },
     button: {
-        backgroundColor: '#007AFF',
         paddingVertical: 15,
         borderRadius: 10,
         marginTop: 10,
+    },
+    incomeButton: {
+        backgroundColor: Colors.green,
+    },
+    expenseButton: {
+        backgroundColor: Colors.red,
     },
     buttonText: {
         color: '#fff',

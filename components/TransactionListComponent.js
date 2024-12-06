@@ -141,6 +141,7 @@ const styles = StyleSheet.create({
     marginTop: 20,
     marginHorizontal: 20,
     width: '90%',
+    backgroundColor: '#fff',
   },
   totalText: {
     fontSize: 18,

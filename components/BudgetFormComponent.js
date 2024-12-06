@@ -1,6 +1,8 @@
 import React, { useState, useContext } from 'react';
 import { StyleSheet, View, Text, TextInput, TouchableOpacity, Alert } from 'react-native';
 import { UserContext } from '../context/userContext';
+import { useNavigation } from '@react-navigation/native';
+import { Colors } from '../assets/colors';
 
 const BudgetFormTab = () => {
     const [startDate, setStartDate] = useState('');
@@ -10,6 +12,11 @@ const BudgetFormTab = () => {
     const [notes, setNotes] = useState('');
 
     const { user } = useContext(UserContext);
+    const navigation = useNavigation();
+
+    const navigateToBudgetSummary = () => {
+        navigation.navigate('BudgetSummary');
+    };
 
     const handleSubmission = async () => {
         if (!user) {
@@ -107,7 +114,14 @@ const BudgetFormTab = () => {
                 <TouchableOpacity style={styles.button} onPress={handleSubmission}>
                     <Text style={styles.buttonText}>Save</Text>
                 </TouchableOpacity>
+
+
             </View>
+             {/* Navigate to Budget Summary */}
+             <TouchableOpacity style={[styles.button, { marginTop: 30, width: '90%', alignSelf: 'center' }]} 
+                onPress={() => navigation.navigate('BudgetSummary')}>
+                    <Text style={styles.buttonText} onPress={navigateToBudgetSummary}>View Budget Summary</Text>
+                </TouchableOpacity>
         </View>
     );
 };
@@ -137,17 +151,18 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         marginBottom: 20,
         textAlign: 'center',
+        color: Colors.lightBlue,
     },
     input: {
         height: 50,
-        borderColor: '#007AFF',
+        borderColor: Colors.lightBlue,
         borderWidth: 1,
         borderRadius: 10,
         marginBottom: 15,
         paddingLeft: 10,
     },
     button: {
-        backgroundColor: '#007AFF',
+        backgroundColor: Colors.lightBlue,
         paddingVertical: 15,
         borderRadius: 10,
         marginTop: 10,

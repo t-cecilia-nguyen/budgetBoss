@@ -22,7 +22,7 @@ const expenseData = (expenseTransactions || [])
       return undefined; // Skip invalid dates
     }
 
-    const formattedDate = date.toLocaleDateString("en-GB", {
+    const formattedDate = date.toLocaleDateString("en-US", {
       month: "2-digit",
       day: "2-digit",
       timeZone: "UTC", 

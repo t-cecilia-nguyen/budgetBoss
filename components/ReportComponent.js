@@ -20,8 +20,6 @@ const ReportComponent = ({
   const { transactionsChanged, setTransactionsChanged } = useTransactions();
 
 
-
-
   useEffect(() => {
     const fetchTransactions = async () => {
       if (!user) {
