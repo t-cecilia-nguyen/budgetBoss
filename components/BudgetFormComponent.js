@@ -1,138 +1,76 @@
-import React, { useEffect, useState } from 'react';
-import { StyleSheet, View, Text, TextInput, TouchableOpacity } from 'react-native';
-import { Picker } from '@react-native-picker/picker';
-import { FlatList } from 'react-native-gesture-handler';
-import { useBudgets, useTransactions } from '../navigations/bottomTabs';
-import { BudgetContext } from '../navigations/bottomTabs';
+import React, { useState } from 'react';
+import { StyleSheet, View, Text, TextInput, TouchableOpacity, Alert } from 'react-native';
+import { useContext } from 'react';
+import { UserContext } from '../context/userContext';
 
-
-const BudgetFormTab = ({userId}) => {
-
+const BudgetFormTab = () => {
     const [startDate, setStartDate] = useState('');
     const [endDate, setEndDate] = useState('');
     const [amount, setAmount] = useState('');
     const [category, setCategory] = useState('');
     const [notes, setNotes] = useState('');
-    const [budgets, setBudgets] = useState([]);
 
-    const [viewMode, setViewMode] = useState('Form');
-
-    useEffect(() => {
-
-        // Check if any budgets exist for user ID
-        const getBudgets = async () => {
-            try {
-                const response = await fetch(`http://10.0.2.2:3000/api/budgets/${userId}`);
-                
-                if (!response.ok) throw new Error('Failed to fetch budgets');
-
-                const data = await response.json();
-
-                if (data.length > 0) {
-                    setBudgets(data);
-                    
-                    setViewMode('Summary');
-                } else {
-                    setViewMode('Form');
-                }
-            } catch (err) {
-                console.error('Error while fetching budgets:', err);
-                setViewMode('Form');
-            }
-        };
-
-        getBudgets();
-    }, [userId]);
+    const { user } = useContext(UserContext);
 
     const handleSubmission = async () => {
-        
-        try {
-            const newBudget = {userId, amount: parseFloat(amount), startDate, endDate, category, notes};
+        if (!user) {
+            Alert.alert('Error', 'User not logged in');
+            return;
+        }
 
-            const response = await fetch('http://10.0.2.2:3000/api/budgets/', {
+        const newBudget = {
+            userId: user.id,
+            startDate,
+            endDate,
+            amount: parseFloat(amount),
+            category,
+            notes,
+        };
+        
+        console.log('Submitting budget:', newBudget);
+
+        try {
+            const response = await fetch('http://10.0.2.2:3000/api/budgets', {
                 method: 'POST',
-                headers: {'Content-Type': 'application/json'},
+                headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(newBudget),
             });
-
-            if (!response.ok) throw new Error('Failed to add budget');
+            
+            if (!response.ok) {
+                const errorText = await response.text();
+                console.error('Failed to save budget:', errorText);
+                throw new Error(`Failed to save budget: ${errorText}`);
+            }
 
             const result = await response.json();
-            console.log('Budget has been added:', result);
+            console.log('Budget saved successfully:', result);
 
-            setBudgets((prev) => [...prev, {...newBudget, id: result.Id}]);
-            resetForm();
+            setStartDate('');
+            setEndDate('');
+            setAmount('');
+            setCategory('');
+            setNotes('');
 
-            setViewMode('Summary');
-        } catch (err) {
-            console.error('Error while adding budget:', err);
+            Alert.alert('Success', 'Budget saved successfully');
+        } catch (error) {
+            console.error('Error saving budget:', error);
+            Alert.alert('Error', 'Failed to save budget');
         }
     };
 
-    const handleDelete = async (id) => {
+    return (
+        <View>
+            <View style={styles.form}>
+                <Text style={styles.title}>Budget Form</Text>
 
-        try {
-            const response = await fetch(`http://10.0.2.2:3000/api/budgets/${id}`, {
-                method: 'DELETE',
-            });
-
-            if (!response.ok) throw new Error('Failed to delete budget');
-            
-            setBudgets(budgets.filter(budget => budget.id !== id));
-        } catch (err) {
-            console.error('Error deleting budget:', err);
-        }
-    };
-
-    const resetForm = () => {
-        setStartDate('');
-        setEndDate('');
-        setAmount('');
-        setCategory('');
-        setNotes('');
-    }
-
-    // Render the budget summaries
-    const renderBudgetSummary = () => (
-
-        <View style={styles.container}>
-            <Text style={styles.title}>Budgets Summary</Text>
-            <FlatList
-                data={budgets}
-                keyExtractor={(item) => item.id.toString()}
-                renderItem={({item}) => (
-                    <View style={styles.row}>
-                        <Text style={styles.cell}>{item.category}</Text>
-                        <Text style={styles.cell}>{item.amount}</Text>
-                        <Text style={styles.cell}>{item.startDate} - {item.endDate}</Text>
-                        <TouchableOpacity
-                            style={styles.button}
-                            onPress={() => handleDelete(item.id)}
-                        >
-                            <Text style={styles.buttonText}>Delete</Text>
-                        </TouchableOpacity>
-                    </View>
-                )}
-            />
-            <TouchableOpacity
-                style={styles.addButton}
-                onPress={() => setViewMode('Form')}
-            >
-                <Text style={styles.addButtonText}>Add New Budget</Text>
-            </TouchableOpacity>
-        </View>
-    );
-
-    const renderBudgetForm = () => (
-        <View style={styles.container}>
-            <Text style={styles.title}>Add New Budget</Text>
-            {/* Text Input for Start Date */}
-            <TextInput
+                {/* Text Input for Start Date */}
+                <TextInput
                     style={styles.input}
                     placeholder="Start Date (yyyy-mm-dd)"
                     value={startDate}
                     onChangeText={setStartDate}
                 />
+
                 {/* Text Input for End Date */}
                 <TextInput
                     style={styles.input}
@@ -140,6 +78,7 @@ const BudgetFormTab = ({userId}) => {
                     value={endDate}
                     onChangeText={setEndDate}
                 />
+
                 {/* Text Input for Amount */}
                 <TextInput
                     style={styles.input}
@@ -164,29 +103,35 @@ const BudgetFormTab = ({userId}) => {
                     value={notes}
                     onChangeText={setNotes}
                 />
-                {/* Button to save Budget Entry */}
+
+                {/* Button to submit form */}
                 <TouchableOpacity style={styles.button} onPress={handleSubmission}>
-                    <Text style={styles.buttonText}>Save Budget</Text>
+                    <Text style={styles.buttonText}>Save</Text>
                 </TouchableOpacity>
-                <TouchableOpacity
-                    style={styles.button}
-                    onPress={() => setViewMode('Summary')}
-                >
-                    <Text style={styles.buttonText}>Back to Summary</Text>
-                </TouchableOpacity>
+            </View>
         </View>
     );
-
-    return viewMode === 'Summary' ? renderBudgetSummary() : renderBudgetForm();
 };
 
 // Styles
 const styles = StyleSheet.create({
-
     container: {
         flex: 1,
         backgroundColor: '#F0F0F5',
         padding: 20,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    form: {
+        backgroundColor: '#fff',
+        borderRadius: 10,
+        padding: 20,
+        shadowColor: '#000',
+        shadowOpacity: 0.1,
+        elevation: 5,
+        width: '90%',
+        marginHorizontal: 20,
+        marginTop: 20,
     },
     title: {
         fontSize: 24,
@@ -212,28 +157,6 @@ const styles = StyleSheet.create({
         color: '#fff',
         textAlign: 'center',
         fontSize: 18,
-    },
-    addButton: {
-        backgroundColor: '#007AFF',
-        paddingVertical: 15,
-        borderRadius: 10,
-        marginTop: 20,
-    },
-    addButtonText: {
-        color: '#fff',
-        textAlign: 'center',
-        fontSize: 18,
-    },
-    row: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        marginBottom: 15,
-    },
-    cell: {
-        fontSize: 16,
-        color: '#333',
-        width: '30%',
-        textAlign: 'center',
     },
 });
 
