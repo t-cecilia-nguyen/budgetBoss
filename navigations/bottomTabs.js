@@ -1,7 +1,7 @@
 import { FontAwesome } from 'react-native-vector-icons';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Colors } from '../assets/colors';
-import { initialBudgets } from '../data/budget';
+import { BudgetProvider } from '../context/budgetContext';
 
 import { useState, createContext, useContext } from 'react';
 
@@ -41,21 +41,7 @@ export const TransactionsProvider = ({ children }) => {
 	);
 };
 
-// BudgetContext
-export const BudgetContext = createContext();
 
-export const useBudgets = () => {
-  return useContext(BudgetContext);
-}
-export const BudgetProvider = ({ children }) => {
-  const [budgetEntries, setBudgetEntries] = useState(initialBudgets);
-
-  return (
-    <BudgetContext.Provider value={{ budgetEntries, setBudgetEntries }}>
-      {children}
-    </BudgetContext.Provider>
-  );
-};
 
 
 export default function BottomTabs() {
@@ -63,7 +49,7 @@ export default function BottomTabs() {
     <BudgetProvider>
       <TransactionsProvider>
         <Tab.Navigator
-          initialRouteName='Reports'
+          initialRouteName='Transactions'
           screenOptions={{
             headerShown: false,
             tabBarActiveTintColor: Colors.accentYellow,

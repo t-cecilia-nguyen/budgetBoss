@@ -7,18 +7,22 @@ import ReportPrevMonthComponent from "./reports/ReportPrevMonthComponent ";
 import ReportThisMonthComponent from "./reports/ReportThisMonthComponent";
 import { UserContext } from "../context/userContext";
 import { useContext, useEffect } from "react";
-import { useTransactions } from "../navigations/bottomTabs";
+import {  useTransactions } from "../navigations/bottomTabs";
+import { BudgetContext } from "../context/budgetContext";
 
-const ReportComponent = ({
-  budgetEntries,
-  setBudgetEntries
-}) => {
+const ReportComponent = ({ budgets, setBudgetChanged }) => {
 
   const { user } = useContext(UserContext); // Access user context
   const [incomeTransactions, setIncomeTransactions] = useState([]);
   const [expenseTransactions, setExpenseTransactions] = useState([]);
   const { transactionsChanged, setTransactionsChanged } = useTransactions();
+  
+  useEffect(() => {
+    // Re-fetch budgets 
+    setBudgetChanged((prev) => !prev);
+}, []);
 
+  // FETCH USER TRANSACTIONS
 
   useEffect(() => {
     const fetchTransactions = async () => {
@@ -51,6 +55,9 @@ const ReportComponent = ({
   }, [user, transactionsChanged]);
 
 
+  
+
+
   const [selectedButton, setSelectedButton] = useState("This Month");
 
   return (
@@ -81,13 +88,16 @@ const ReportComponent = ({
         <ReportPrevMonthComponent 
           incomeTransactions={incomeTransactions}
           expenseTransactions={expenseTransactions}
-          budgetEntries={budgetEntries}
+          budgets={budgets}
+          setBudgetChanged={setBudgetChanged}
         />}
       {selectedButton === "This Month" &&
        <ReportThisMonthComponent 
           incomeTransactions={incomeTransactions}
           expenseTransactions={expenseTransactions}
-          budgetEntries={budgetEntries}
+          budgets={budgets}
+          setBudgetChanged={setBudgetChanged}
+
        />}
     </View>
   );

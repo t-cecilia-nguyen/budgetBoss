@@ -3,6 +3,7 @@ import { StyleSheet, View, Text, TextInput, TouchableOpacity, Alert } from 'reac
 import { UserContext } from '../context/userContext';
 import { useNavigation } from '@react-navigation/native';
 import { Colors } from '../assets/colors';
+import { BudgetContext } from '../context/budgetContext';
 
 const BudgetFormTab = () => {
     const [startDate, setStartDate] = useState('');
@@ -13,6 +14,7 @@ const BudgetFormTab = () => {
 
     const { user } = useContext(UserContext);
     const navigation = useNavigation();
+    const {setBudgets} = useContext(BudgetContext);      
 
     const navigateToBudgetSummary = () => {
         navigation.navigate('BudgetSummary');
@@ -50,6 +52,10 @@ const BudgetFormTab = () => {
 
             const result = await response.json();
             console.log('Budget saved successfully:', result);
+
+             // Update budgets in context
+            setBudgets((prevBudgets) => [...prevBudgets, result]);
+
 
             setStartDate('');
             setEndDate('');

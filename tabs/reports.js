@@ -1,8 +1,11 @@
 import React from "react";
 import { StyleSheet, View, Text } from "react-native";
 import ReportComponent from "../components/ReportComponent";
-import { useBudgets, useTransactions } from '../navigations/bottomTabs';
-import { useEffect } from 'react';
+import {  useTransactions } from '../navigations/bottomTabs';
+import { useEffect, useContext } from 'react';
+
+import { BudgetContext } from "../context/budgetContext";
+
 
 const ReportsTab = ({ route }) => {
 	const {
@@ -12,8 +15,7 @@ const ReportsTab = ({ route }) => {
 		setIncomeTransactions
   } = useTransactions();  
 
-  const { budgetEntries, setBudgetEntries } = useBudgets();
-
+  const { budgets, setBudgetChanged } = useContext(BudgetContext);
 
 	useEffect(() => {
     console.log('Income Transactions:', incomeTransactions);
@@ -28,8 +30,8 @@ const ReportsTab = ({ route }) => {
 			expenseTransactions={expenseTransactions} 
 			setExpenseTransactions={setExpenseTransactions}
 			setIncomeTransactions={setIncomeTransactions}
-			budgetEntries={budgetEntries}
-			setBudgetEntries={setBudgetEntries}
+			budgets={budgets}
+			setBudgetChanged={setBudgetChanged}
 		/>
 		</View>
 	);

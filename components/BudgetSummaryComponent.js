@@ -2,10 +2,12 @@ import React, { useState, useEffect, useContext } from 'react';
 import { StyleSheet, View, Text, FlatList, Alert } from 'react-native'; 
 import { UserContext } from '../context/userContext';
 import { Colors } from '../assets/colors';
+import {BudgetContext} from '../context/budgetContext'
+
 
 const BudgetSummary = () => { 
     const { user } = useContext(UserContext); 
-    const [budgets, setBudgets] = useState([]);
+    const {budgets, setBudgets} = useContext(BudgetContext);
 
     useEffect(() => { 
         if (user) { 

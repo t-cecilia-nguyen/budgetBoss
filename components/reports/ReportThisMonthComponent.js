@@ -17,7 +17,7 @@ const { width: screenWidth } = Dimensions.get("window");
 const ReportThisMonthComponent = ({
   incomeTransactions,
   expenseTransactions,
-  budgetEntries,
+  budgets,
 }) => {
 
   // Get the current month and year
@@ -42,25 +42,34 @@ const ReportThisMonthComponent = ({
       );
     });
 
-    const filterBudgetEntriesByCurrentMonth = (entries) =>
+    const filterBudgetByCurrentMonth = (entries) =>
       entries.filter((entry) => {
-        const startDay = new Date(entry.StartDate);
-        const endDay = new Date(entry.EndDate);
+        const startDay = new Date(entry.start_date);
+        const endDay = new Date(entry.end_date);
+
         return (
-          isValidDate(entry.StartDate) &&
-          isValidDate(entry.EndDate) &&
-          ((endDay.getMonth() === currentMonth && endDay.getFullYear() === currentYear) ||
-            (startDay.getMonth() === currentMonth && startDay.getFullYear() === currentYear))
+          isValidDate(entry.start_date) &&
+          isValidDate(entry.end_date) &&
+          (
+            // Budget starts or ends in the current month
+            (startDay.getUTCMonth() === currentMonth && startDay.getUTCFullYear() === currentYear) ||
+            (endDay.getUTCMonth() === currentMonth && endDay.getUTCFullYear() === currentYear) ||
+    
+            // Budget spans across the current month
+            (startDay.getUTCMonth() <= currentMonth && endDay.getUTCMonth() >= currentMonth && startDay.getUTCFullYear() === currentYear)
+          )
         );
       });
+   
 
 
   const filteredExpenseTransactions = filterByCurrentMonth(expenseTransactions);
-  const filteredBudgetEntries = filterBudgetEntriesByCurrentMonth(budgetEntries);
+  const filteredBudgetEntries = filterBudgetByCurrentMonth(budgets);
   const filteredIncomeTransactions = filterByCurrentMonth(incomeTransactions);
 
   console.log("FILTERED")
-  console.log(filteredExpenseTransactions, filteredIncomeTransactions,filteredBudgetEntries );
+  console.log(    "BUDGET THIS MONTH: ",filteredBudgetEntries
+  );
 
  // Calculate totals directly for the current month
 const totalIncome = filteredIncomeTransactions.reduce(
@@ -72,7 +81,7 @@ const totalExpense = filteredExpenseTransactions.reduce(
   0
 );
 const totalBudget = filteredBudgetEntries.reduce(
-  (sum, txn) => sum + txn.Amount,
+  (sum, txn) => sum + txn.amount,
   0
 );
 
@@ -91,7 +100,9 @@ const totalBudget = filteredBudgetEntries.reduce(
   return (
     <View style={styles.container}>
       <ScrollView nestedScrollEnabled>
+
         <View style={styles.card}>
+
           <Text style={styles.cardText}>Running Budget</Text>
           <View style={styles.noteBox}>
             <View style={styles.flexBox}>

@@ -11,7 +11,7 @@ const { width: screenWidth } = Dimensions.get("window");
 const ReportPrevMonthComponent = ({
   incomeTransactions,
   expenseTransactions,
-  budgetEntries,
+  budgets
 }) => {
   // Get the current month and year
   const today = new Date();
@@ -38,29 +38,31 @@ const ReportPrevMonthComponent = ({
       );
     });
 
-  const filterBudgetEntriesByPrevMonth = (entries) =>
+  const filterBudgetsByPrevMonth = (entries) =>
     entries.filter((entry) => {
-      const startDay = new Date(entry.StartDate);
-      const endDay = new Date(entry.EndDate);
+      const startDay = new Date(entry.start_date);
+      const endDay = new Date(entry.end_date);
       return (
-        isValidDate(entry.StartDate) &&
-        isValidDate(entry.EndDate) &&
-        ((endDay.getUTCMonth() === prevMonth &&
-          endDay.getUTCFullYear() === currentYear) ||
-          (startDay.getUTCMonth() === prevMonth &&
-            startDay.getUTCFullYear() === currentYear))
+        isValidDate(entry.start_date) &&
+        isValidDate(entry.end_date) &&
+        (
+          // Budget starts or ends in the previous month
+          (startDay.getUTCMonth() === prevMonth && startDay.getUTCFullYear() === currentYear) ||
+          (endDay.getUTCMonth() === prevMonth && endDay.getUTCFullYear() === currentYear) ||
+  
+          // Budget spans across the previous month
+          (startDay.getUTCMonth() <= prevMonth && endDay.getUTCMonth() >= prevMonth && startDay.getUTCFullYear() === currentYear)
+        )
       );
     });
 
   const filteredExpenseTransactions = filterByPrevMonth(expenseTransactions);
-  const filteredBudgetEntries = filterBudgetEntriesByPrevMonth(budgetEntries);
+  const filteredBudgets = filterBudgetsByPrevMonth(budgets);
   const filteredIncomeTransactions = filterByPrevMonth(incomeTransactions);
 
   console.log("FILTERED");
   console.log(
-    filteredExpenseTransactions,
-    filteredIncomeTransactions,
-    filteredBudgetEntries
+    "BUDGET PREV MONTH: ",filteredBudgets
   );
 
   // Calculate totals directly for the current month
@@ -72,15 +74,15 @@ const ReportPrevMonthComponent = ({
     (sum, txn) => sum + txn.amount,
     0
   );
-  const totalBudget = filteredBudgetEntries.reduce(
-    (sum, txn) => sum + txn.Amount,
+  const totalBudget = filteredBudgets.reduce(
+    (sum, txn) => sum + txn.amount,
     0
   );
 
   const netAmount = totalBudget - totalExpense;
   const expensePercentage = totalBudget > 0 ? totalExpense / totalBudget : 0;
 
-  console.log("netAmount:", netAmount, "expensePercentage", expensePercentage); //debug
+  //console.log("netAmount:", netAmount, "expensePercentage", expensePercentage); //debug
 
   return (
     <View style={styles.container}>
