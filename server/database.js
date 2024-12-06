@@ -33,4 +33,18 @@ db.run(`
     )
 `);
 
+// Create Budgets table if it doesn't already exist
+db.run(`
+    CREATE TABLE IF NOT EXISTS budgets (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        user_id INTEGER NOT NULL,
+        amount REAL NOT NULL,
+        start_date TEXT NOT NULL,
+        end_date TEXT NOT NULL,
+        category TEXT NOT NULL,
+        notes TEXT NOT NULL,
+        FOREIGN KEY (user_id) REFERENCES user(id)
+    )
+`);
+
 module.exports = db;

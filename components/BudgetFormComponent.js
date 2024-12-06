@@ -1,4 +1,4 @@
-import React, { createContext, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { StyleSheet, View, Text, TextInput, TouchableOpacity } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
 import { FlatList } from 'react-native-gesture-handler';
@@ -6,120 +6,128 @@ import { useBudgets, useTransactions } from '../navigations/bottomTabs';
 import { BudgetContext } from '../navigations/bottomTabs';
 
 
-const BudgetFormTab = () => {
+const BudgetFormTab = ({userId}) => {
 
     const [startDate, setStartDate] = useState('');
     const [endDate, setEndDate] = useState('');
     const [amount, setAmount] = useState('');
     const [category, setCategory] = useState('');
     const [notes, setNotes] = useState('');
+    const [budgets, setBudgets] = useState([]);
 
-    //const [budgetEntries, setBudgetEntries] = useState('');
     const [viewMode, setViewMode] = useState('Form');
 
-    const { incomeTransactions, expenseTransactions, setExpenseTransactions, setIncomeTransactions } = useTransactions();
-    const { budgetEntries, setBudgetEntries } = useBudgets();
+    useEffect(() => {
 
-    const handleSubmission = () => {
-        
-        const newBudgetEntry = {
-            StartDate: startDate,
-            EndDate: endDate,
-            Amount: parseFloat(amount),
-            Category: category,
-            Notes: notes,
+        // Check if any budgets exist for user ID
+        const getBudgets = async () => {
+            try {
+                const response = await fetch(`http://10.0.2.2:3000/api/budgets/${userId}`);
+                
+                if (!response.ok) throw new Error('Failed to fetch budgets');
+
+                const data = await response.json();
+
+                if (data.length > 0) {
+                    setBudgets(data);
+                    
+                    setViewMode('Summary');
+                } else {
+                    setViewMode('Form');
+                }
+            } catch (err) {
+                console.error('Error while fetching budgets:', err);
+                setViewMode('Form');
+            }
         };
 
-        // Add new budget entry to array with previous entries
-        setBudgetEntries((prevEntries) => {
-            const updatedBudget = [...prevEntries, newBudgetEntry];
-            console.log('Updated Budget Entries:', updatedBudget);
-            return updatedBudget;
+        getBudgets();
+    }, [userId]);
+
+    const handleSubmission = async () => {
+        
+        try {
+            const newBudget = {userId, amount: parseFloat(amount), startDate, endDate, category, notes};
+
+            const response = await fetch('http://10.0.2.2:3000/api/budgets/', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify(newBudget),
+            });
+
+            if (!response.ok) throw new Error('Failed to add budget');
+
+            const result = await response.json();
+            console.log('Budget has been added:', result);
+
+            setBudgets((prev) => [...prev, {...newBudget, id: result.Id}]);
+            resetForm();
+
+            setViewMode('Summary');
+        } catch (err) {
+            console.error('Error while adding budget:', err);
+        }
+    };
+
+    const handleDelete = async (id) => {
+
+        try {
+            const response = await fetch(`http://10.0.2.2:3000/api/budgets/${id}`, {
+                method: 'DELETE',
+            });
+
+            if (!response.ok) throw new Error('Failed to delete budget');
             
-        });
+            setBudgets(budgets.filter(budget => budget.id !== id));
+        } catch (err) {
+            console.error('Error deleting budget:', err);
+        }
+    };
 
-        console.log('Added entry to Budget:', newBudgetEntry);
-
-        // Reset form data
+    const resetForm = () => {
         setStartDate('');
         setEndDate('');
-        setAmount('')
+        setAmount('');
         setCategory('');
         setNotes('');
-    };
-
-    const combineAndSortTransactions = (incomeTransactions = [], expenseTransactions = []) => {
-        const allTransactions = [...incomeTransactions, ...expenseTransactions];
-        return allTransactions.sort((a, b) => new Date(b.Date) - new Date(a.Date));
-        };
+    }
 
     // Render the budget summaries
-    const renderBudgetSummary = () => {
+    const renderBudgetSummary = () => (
 
-        const { incomeTransactions, expenseTransactions } = useTransactions();
-
-
-        const transactions = combineAndSortTransactions(incomeTransactions, expenseTransactions);
-        
-        const totalIncome = transactions.filter(t => t.Type === 'Income').reduce((sum, t) => sum + t.Amount, 0);
-        const totalExpenses = transactions.filter(t => t.Type === 'Expense').reduce((sum, t) => sum + t.Amount, 0);
-
-        const netAmount = totalIncome - totalExpenses;
-
-
-        // Message if no budget entries currently exist
-        if (budgetEntries.length === 0) {
-            return <Text>No budgets have been added, please add a budget to view its summary.</Text>
-        }
-
-        // Use array of budget entries and render them in a list
-        return (
-            <View>
-                <View style={styles.totalsContainer}>
-                    <Text style={styles.totalText}>Incoming: <Text style={styles.income}>+${totalIncome}</Text></Text>
-                    <Text style={styles.totalText}>Outgoing: <Text style={styles.expense}>-${totalExpenses}</Text></Text>
-                    <Text style={styles.totalText}>Budget Target: <Text style={netAmount >= 0 ? styles.income : styles.expense}>{netAmount >= 0 ? '+' : '-'}${Math.abs(netAmount)}</Text></Text>
-                </View>
-                <FlatList
-                    data={budgetEntries}
-                    keyExtractor={(item, index) => index.toString()}
-                    renderItem={({ item }) => (
-                        <View style={styles.summaryItem}>
-                            <Text>Start Date: {item.StartDate}</Text>
-                            <Text>End Date: {item.EndDate}</Text>
-                            <Text>Budget Amount: ${item.Amount}</Text>
-                            <Text>Budget Category:{item.Category}</Text>
-                            <Text>Notes: {item.Notes}</Text>
-                        </View>
-                    )}
-                />
-            </View>
-        );
-    };
-
-    return (
-        <View>
-            <Picker
-                selectedValue={viewMode}
-                style={styles.picker}
-                onValueChange={(itemValue) => setViewMode(itemValue)}>
-                
-                {/* Picker to select between budget form and budget summary */}
-                <Picker.Item label="Add New Budget" value="Form"></Picker.Item>
-
-                {/* Hide budget summary option unless a budget exists */}
-                {budgetEntries.length > 0 && (
-                    <Picker.Item label="View Budget Summary" value="Summary"></Picker.Item>
+        <View style={styles.container}>
+            <Text style={styles.title}>Budgets Summary</Text>
+            <FlatList
+                data={budgets}
+                keyExtractor={(item) => item.id.toString()}
+                renderItem={({item}) => (
+                    <View style={styles.row}>
+                        <Text style={styles.cell}>{item.category}</Text>
+                        <Text style={styles.cell}>{item.amount}</Text>
+                        <Text style={styles.cell}>{item.startDate} - {item.endDate}</Text>
+                        <TouchableOpacity
+                            style={styles.button}
+                            onPress={() => handleDelete(item.id)}
+                        >
+                            <Text style={styles.buttonText}>Delete</Text>
+                        </TouchableOpacity>
+                    </View>
                 )}
-            </Picker>
+            />
+            <TouchableOpacity
+                style={styles.addButton}
+                onPress={() => setViewMode('Form')}
+            >
+                <Text style={styles.addButtonText}>Add New Budget</Text>
+            </TouchableOpacity>
+        </View>
+    );
 
-            {/* Form Views */}
-            {viewMode === 'Form' && (
-                <View style={styles.form}>
-                <Text style={styles.title}>Budget Form</Text>
-
-                {/* Text Input for Start Date */}
-                <TextInput
+    const renderBudgetForm = () => (
+        <View style={styles.container}>
+            <Text style={styles.title}>Add New Budget</Text>
+            {/* Text Input for Start Date */}
+            <TextInput
                     style={styles.input}
                     placeholder="Start Date (yyyy-mm-dd)"
                     value={startDate}
@@ -156,23 +164,20 @@ const BudgetFormTab = () => {
                     value={notes}
                     onChangeText={setNotes}
                 />
-
                 {/* Button to save Budget Entry */}
                 <TouchableOpacity style={styles.button} onPress={handleSubmission}>
                     <Text style={styles.buttonText}>Save Budget</Text>
                 </TouchableOpacity>
-            </View>
-            )}
-
-            {/* Budget Summary Views */}
-            {viewMode === 'Summary' && (
-                <View style={styles.summaryContainer}>
-                    <Text style={styles.title}>Budget Summary</Text>
-                    {renderBudgetSummary()}
-                </View>
-            )}
+                <TouchableOpacity
+                    style={styles.button}
+                    onPress={() => setViewMode('Summary')}
+                >
+                    <Text style={styles.buttonText}>Back to Summary</Text>
+                </TouchableOpacity>
         </View>
     );
+
+    return viewMode === 'Summary' ? renderBudgetSummary() : renderBudgetForm();
 };
 
 // Styles
@@ -182,18 +187,6 @@ const styles = StyleSheet.create({
         flex: 1,
         backgroundColor: '#F0F0F5',
         padding: 20,
-        justifyContent: 'center',
-        alignItems: 'center',
-    },
-    form: {
-        backgroundColor: '#fff',
-        borderRadius: 10,
-        padding: 20,
-        shadowColor: '#000',
-        shadowOpacity: 0.1,
-        elevation: 5,
-        width: '90%',
-        marginHorizontal: 20,
     },
     title: {
         fontSize: 24,
@@ -209,69 +202,39 @@ const styles = StyleSheet.create({
         marginBottom: 15,
         paddingLeft: 10,
     },
-
-    picker: {
-        height: 60,
-        marginBottom: 15,
-        borderWidth: 1,
-        borderRadius: 10,
-        borderColor: '#007AFF',
-    },
-
     button: {
         backgroundColor: '#007AFF',
         paddingVertical: 15,
         borderRadius: 10,
         marginTop: 10,
     },
-
     buttonText: {
         color: '#fff',
         textAlign: 'center',
         fontSize: 18,
     },
-
-    // SUMMARY STYLING
-    summaryContainer: {
+    addButton: {
+        backgroundColor: '#007AFF',
+        paddingVertical: 15,
+        borderRadius: 10,
         marginTop: 20,
-        width: '90%',
-        marginHorizontal: 20,
     },
-
-    summaryItem: {
-        backgroundColor: '#fff',
-        padding: 10,
-        borderRadius: 10,
-        marginBottom: 10,
-        shadowColor: '#000',
-        shadowOpacity: 0.1,
-        elevation: 5,
-    },
-
-    totalsContainer: {
-        backgroundColor: '#f0f0f0',
-        padding: 15,
-        marginBottom: 10,
-        borderRadius: 10,
-        borderWidth: 1,
-        borderColor: '#ddd',
-        shadowColor: '#000',
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.1,
-        shadowRadius: 5,
-        elevation: 3,
-      },
-      totalText: {
+    addButtonText: {
+        color: '#fff',
+        textAlign: 'center',
         fontSize: 18,
-        fontWeight: 'bold',
-        marginBottom: 5,
-      },
-      expense: {
-        color: 'red',
-      },
-      income: {
-        color: 'green',
-      },
+    },
+    row: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        marginBottom: 15,
+    },
+    cell: {
+        fontSize: 16,
+        color: '#333',
+        width: '30%',
+        textAlign: 'center',
+    },
 });
 
 export default BudgetFormTab;
