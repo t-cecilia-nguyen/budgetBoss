@@ -53,7 +53,7 @@ const BudgetFormTab = () => {
             const result = await response.json();
             console.log('Budget saved successfully:', result);
             
-            // Create new bduget entry with user inputted details
+            // Create new budget entry with user inputted details
             const newBudgetEntry = {
                 id: result.budgetId,
                 start_date: newBudget.startDate,
