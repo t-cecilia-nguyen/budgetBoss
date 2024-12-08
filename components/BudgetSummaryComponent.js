@@ -10,17 +10,17 @@ const BudgetSummary = () => {
     const {budgets, setBudgets} = useContext(BudgetContext);
 
     useEffect(() => { 
-        if (user) { 
-        fetch(`http://10.0.2.2:3000/api/budgets/${user.id}`)
-            .then(response => response.json())
-            .then(data => {
+        if (user) {
+            fetch(`http://10.0.2.2:3000/api/budgets/${user.id}`)
+              .then((response) => response.json())
+              .then((data) => {
                 setBudgets(data);
-            })
-            .catch(error => {
-            console.error('Error fetching budget summaries:', error);
-            Alert.alert('Error', 'Failed to fetch budget summaries');
-            });
-        }
+              })
+              .catch((error) => {
+                console.error('Error fetching budget summaries:', error);
+                Alert.alert('Error', 'Failed to fetch budget summaries');
+              });
+          }
     }, [user]);
 
     return (

@@ -52,10 +52,24 @@ const BudgetFormTab = () => {
 
             const result = await response.json();
             console.log('Budget saved successfully:', result);
+            
+            // Create new bduget entry with user inputted details
+            const newBudgetEntry = {
+                id: result.budgetId,
+                start_date: newBudget.startDate,
+                end_date: newBudget.endDate,
+                amount: newBudget.amount,
+                category: newBudget.category,
+                notes: newBudget.notes,
+                user_id: user.id,
+            };
 
              // Update budgets in context
-            setBudgets((prevBudgets) => [...prevBudgets, result]);
-
+            setBudgets(prevBudgets => {
+                console.log("Previous budgets:", prevBudgets);
+                console.log("New budget entry:", newBudgetEntry);
+                return [...prevBudgets, newBudgetEntry];
+            });
 
             setStartDate('');
             setEndDate('');
